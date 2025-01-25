@@ -2,7 +2,6 @@ function Header(){
     return(
         <header className="header">
       <nav className="header__nav">
-        {/* Left Section */}
         <div className="header__left">
           <span className="header__logo">Uber</span>
           <ul className="header__menu">
@@ -12,7 +11,6 @@ function Header(){
             <li>About</li>
           </ul>
         </div>
-        {/* Right Section */}
         <div className="header__right">
           <ul className="header__options">
             <li>EN</li>
