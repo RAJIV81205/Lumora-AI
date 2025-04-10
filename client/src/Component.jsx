@@ -1,7 +1,7 @@
 import React from "react"
 import { Rocket, CirclePlay, FileUp, FileText, Sparkles , Brain , BookCheck , IdCard } from "lucide-react"
 
-export const Component = () => {
+const Component = () => {
     return (
         <div className="w-full  bg-gradient-to-br from-green-200 to-white font-sans px-4 md:px-0 ">
             <header className="py-6 px-8 flex justify-between items-center">
@@ -109,16 +109,16 @@ export const Component = () => {
                                     <div className="flex-1">
                                         <p className="text-sm font-medium mb-2">Get personalized study tools</p>
                                         <div className="flex gap-2 overflow-x-auto pb-2">
-                                            <div className="min-w-[120px] bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition-all duration-300 cursor-pointer">
-                                            <FileText className="w-5 h-5 text-green-500" />
+                                            <div className="min-w-[120px] bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition-all duration-300 cursor-pointer flex items-center justify-center flex-col">
+                                            <FileText className="w-5 h-5 mb-2 text-green-500" />
                                                 <p className="text-xs font-medium">Summaries</p>
                                             </div>
-                                            <div className="min-w-[120px] bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition-all duration-300 cursor-pointer">
-                                            <BookCheck className="w-5 h-5 text-green-500" />
+                                            <div className="min-w-[120px] bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition-all duration-300 cursor-pointer flex items-center justify-center flex-col">
+                                            <BookCheck className="w-5 h-5 mb-2 text-green-500" />
                                                 <p className="text-xs font-medium">Quizzes</p>
                                             </div>
-                                            <div className="min-w-[120px] bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition-all duration-300 cursor-pointer">
-                                            <IdCard className="w-5 h-5 text-green-500" />
+                                            <div className="min-w-[120px] bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition-all duration-300 cursor-pointer flex items-center justify-center flex-col">
+                                            <IdCard className="w-5 h-5 mb-2 text-green-500" />
                                                 <p className="text-xs font-medium">Flashcards</p>
                                             </div>
                                         </div>
@@ -206,3 +206,5 @@ export const Component = () => {
         </div>
     )
 }
+
+export default Component;
