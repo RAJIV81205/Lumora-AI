@@ -1,5 +1,5 @@
 import React from "react"
-import { Rocket, CirclePlay, FileUp, FileText, Sparkles , Brain , BookCheck , IdCard } from "lucide-react"
+import { Rocket, CirclePlay, FileUp, FileText, Sparkles , Brain , BookCheck , IdCard , Gauge , BrainCog , Braces } from "lucide-react"
 
 const LandingPage = () => {
     return (
@@ -169,7 +169,7 @@ const LandingPage = () => {
                 <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100">
                         <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-                            <span className="material-symbols-outlined text-green-600">speed</span>
+                        <Gauge className="w-5 h-5 text-green-600" />
                         </div>
                         <h3 className="text-lg font-semibold mb-2">Learn 3x Faster</h3>
                         <p className="text-gray-600 text-sm">
@@ -180,7 +180,7 @@ const LandingPage = () => {
 
                     <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100">
                         <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-                            <span className="material-symbols-outlined text-green-600">psychology_alt</span>
+                        <BrainCog className="w-5 h-5 text-green-600" />
                         </div>
                         <h3 className="text-lg font-semibold mb-2">Personalized Learning</h3>
                         <p className="text-gray-600 text-sm">
@@ -191,9 +191,7 @@ const LandingPage = () => {
 
                     <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100">
                         <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-                            <span className="material-symbols-outlined text-green-600">
-                                integration_instructions
-                            </span>
+                        <Braces className="w-5 h-5 text-green-600" />
                         </div>
                         <h3 className="text-lg font-semibold mb-2">Any Format, Any Subject</h3>
                         <p className="text-gray-600 text-sm">
