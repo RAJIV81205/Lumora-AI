@@ -1,7 +1,7 @@
 import React from "react"
 import { Rocket, CirclePlay, FileUp, FileText, Sparkles , Brain , BookCheck , IdCard } from "lucide-react"
 
-const Component = () => {
+const LandingPage = () => {
     return (
         <div className="w-full  bg-gradient-to-br from-green-200 to-white font-sans px-4 md:px-0 ">
             <header className="py-6 px-8 flex justify-between items-center">
@@ -138,27 +138,27 @@ const Component = () => {
                         </h3>
                         <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-70">
                             <img
-                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/MIT_logo.svg/200px-MIT_logo.svg.png"
+                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/MIT_logo.svg/2560px-MIT_logo.svg.png"
                                 alt="MIT"
                                 className="h-8 md:h-10 grayscale hover:grayscale-0 transition-all duration-300"
                             />
                             <img
-                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Harvard_shield_wreath.svg/200px-Harvard_shield_wreath.svg.png"
+                                src="https://lh5.googleusercontent.com/EituGLa2LhnAd-B-SUCpw9WhJTImioKqwFLpe1qDhAx1lKq_VSNiYVi-ghrMxROfyfwz8Rfz-cKYOKBDwh-7OEMButVijE5mXKI9333g2QaiPwzAY6_8HlOSaGI5gy3xHfgia1cB0mU669xrGJ4TXHU"
                                 alt="Harvard"
                                 className="h-12 grayscale hover:grayscale-0 transition-all duration-300"
                             />
                             <img
-                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Stanford_logo.png/220px-Stanford_logo.png"
+                                src="https://assurgentmedical.com/wp-content/uploads/2017/07/stanford-logo-660x330.png"
                                 alt="Stanford"
                                 className="h-10 grayscale hover:grayscale-0 transition-all duration-300"
                             />
                             <img
-                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/UCB_seal.svg/200px-UCB_seal.svg.png"
+                                src="https://logos-world.net/wp-content/uploads/2022/02/UC-Berkeley-Symbol.png"
                                 alt="Berkeley"
                                 className="h-10 md:h-12 grayscale hover:grayscale-0 transition-all duration-300"
                             />
                             <img
-                                src="https://upload.wikimedia.org/wikipedia/en/thumb/2/29/Oxford-University-Circlet.svg/200px-Oxford-University-Circlet.svg.png"
+                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/University_of_Oxford.svg/821px-University_of_Oxford.svg.png"
                                 alt="Oxford"
                                 className="h-10 md:h-12 grayscale hover:grayscale-0 transition-all duration-300"
                             />
@@ -207,4 +207,4 @@ const Component = () => {
     )
 }
 
-export default Component;
+export default LandingPage;
