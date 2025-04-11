@@ -1,6 +1,6 @@
-import User from "../model/UserSchema";
+import User from "../model/userSchema.js";
 import express from "express";
-import bcrypt from bcrypt
+import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 
 const router = express.Router();
@@ -8,8 +8,9 @@ const router = express.Router();
 
 
 router.post("/signup" , async (req,res) =>{ 
-    const {email,password,name,phone} = req.body;
-    if(!email || !password || !name || !phone){
+    const {email,password,username} = req.body;
+    console.log(req.body)
+    if(!email || !password || !username){
         return res.status(400).json({message:"Please fill all the fields"})
     }
     try{
@@ -21,8 +22,8 @@ router.post("/signup" , async (req,res) =>{
         const user = new User({
             email,
             password:hashedPassword,
-            name,
-            phone
+            username,
+            
         });
         await user.save();
         res.status(201).json({message:"User created successfully"})
@@ -56,3 +57,5 @@ router.post("/login" , async (req,res) =>{
         res.status(500).json({message:"Server error"})
     }
 })
+
+export default router;

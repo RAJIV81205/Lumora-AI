@@ -1,23 +1,44 @@
-import React, { useState } from 'react'
+import React, { use, useState } from 'react'
 import { Mail, Lock, Eye, EyeOff, User, CheckCircle } from 'lucide-react'
-import { Link } from 'react-router'
+import { Link , useNavigate } from 'react-router'
 import { motion } from 'framer-motion'
 
 const SignupForm = () => {
+  const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    username: '',
     email: '',
     password: '',
     confirmPassword: ''
   })
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    // Handle signup logic here
-    console.log('Signup attempt:', formData)
+  const url = import.meta.env.VITE_BACKEND_URL
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`${url}/signup`, {
+        method: 'POST',
+        headers:{
+          'Content-type':"application/json"
+        },
+        body:JSON.stringify(formData)
+      })
+      const data = await response.json()
+      if (response.ok) {
+        alert("Account created successfully")
+        navigate("/login")
+      } else {
+        alert(data.message)
+      }
+      
+    } catch (error) {
+      console.error("Error creating account:", error)
+      alert("Error creating account. Please try again.")
+    }
+    
   }
 
   const handleChange = (e) => {
@@ -96,49 +117,26 @@ const SignupForm = () => {
           </motion.div>
 
           <motion.form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6" variants={itemVariants}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <motion.div variants={itemVariants}>
-                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1 font-nunito-sans">
-                  First Name
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
-                  </div>
-                  <input
-                    type="text"
-                    id="firstName"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    className="block w-full pl-9 sm:pl-10 pr-3 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 font-nunito-sans text-sm sm:text-base"
-                    placeholder="John"
-                    required
-                  />
+            <motion.div variants={itemVariants}>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1 font-nunito-sans">
+                Full Name
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <User className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
                 </div>
-              </motion.div>
-
-              <motion.div variants={itemVariants}>
-                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1 font-nunito-sans">
-                  Last Name
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
-                  </div>
-                  <input
-                    type="text"
-                    id="lastName"
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    className="block w-full pl-9 sm:pl-10 pr-3 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 font-nunito-sans text-sm sm:text-base"
-                    placeholder="Doe"
-                    required
-                  />
-                </div>
-              </motion.div>
-            </div>
+                <input
+                  type="text"
+                  id="username"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="block w-full pl-9 sm:pl-10 pr-3 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 font-nunito-sans text-sm sm:text-base"
+                  placeholder="John Doe"
+                  required
+                />
+              </div>
+            </motion.div>
 
             <motion.div variants={itemVariants}>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1 font-nunito-sans">

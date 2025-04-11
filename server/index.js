@@ -2,32 +2,23 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv"
 import connectDB from "./config/db.js";
-import UserRoutes from "./routes/UserRoutes.js";
+import router from "./routes/userRoutes.js";
 
-
-const app =express();
+const app = express();
 app.use(express.json());
 dotenv.config();
-app.use(cors(
-    {
-        origin: ["http://localhost:5173","frontend"],
-        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-        credentials: true,
-        preflightContinue: false,
-    }
-))
+app.use(cors({
+    origin: ["http://localhost:5173"],
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
+    preflightContinue: false,
+}));
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 5000;
 connectDB();
 
-app.use("/api", UserRoutes);
+app.use("/api", router);
 
-
-
-
-
-
-app.listen(PORT , ()=>{
+app.listen(PORT, () => {
     console.log("Server is running on PORT:", PORT);
-
-})
+});
