@@ -181,7 +181,7 @@ const LoginForm = () => {
           </motion.form>
 
           <motion.div className="mt-4 sm:mt-6 text-center" variants={itemVariants}>
-            <p className="text-xs sm:text-sm text-gray-600 font-nunito-sans">
+            <div className="text-xs sm:text-sm text-gray-600 font-nunito-sans">
               Don't have an account? {' '}
               <Link to="/signup">
                 <motion.p 
@@ -192,7 +192,7 @@ const LoginForm = () => {
                   Sign up
                 </motion.p>
               </Link>
-            </p>
+            </div>
           </motion.div>
         </motion.div>
       </motion.div>

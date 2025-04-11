@@ -1,6 +1,6 @@
 import React, { use, useState } from 'react'
 import { Mail, Lock, Eye, EyeOff, User, CheckCircle } from 'lucide-react'
-import { Link , useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { motion } from 'framer-motion'
 
 const SignupForm = () => {
@@ -18,6 +18,13 @@ const SignupForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Check if passwords match
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+
     try {
       const response = await fetch(`${url}/signup`, {
         method: 'POST',
@@ -42,10 +49,12 @@ const SignupForm = () => {
   }
 
   const handleChange = (e) => {
-    const { name, value } = e.target
+ 
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [e.target.name]: e.target.value
+      
+      
     }))
   }
 
@@ -118,7 +127,7 @@ const SignupForm = () => {
 
           <motion.form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6" variants={itemVariants}>
             <motion.div variants={itemVariants}>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1 font-nunito-sans">
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1 font-nunito-sans">
                 Full Name
               </label>
               <div className="relative">
@@ -126,12 +135,13 @@ const SignupForm = () => {
                   <User className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
                 </div>
                 <input
+                autoComplete='off'
                   type="text"
                   id="username"
-                  name="name"
-                  value={formData.name}
+                  name="username"
+                  value={formData.username}
                   onChange={handleChange}
-                  className="block w-full pl-9 sm:pl-10 pr-3 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 font-nunito-sans text-sm sm:text-base"
+                  className="block w-full pl-9 sm:pl-10 pr-3 py-2 sm:py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 font-nunito-sans text-sm sm:text-base "
                   placeholder="John Doe"
                   required
                 />
@@ -259,7 +269,7 @@ const SignupForm = () => {
           </motion.form>
 
           <motion.div className="mt-4 sm:mt-6 text-center" variants={itemVariants}>
-            <p className="text-xs sm:text-sm text-gray-600 font-nunito-sans">
+            <div className="text-xs sm:text-sm text-gray-600 font-nunito-sans">
               Already have an account?{' '}
               <Link to="/login">
                 <motion.p 
@@ -270,7 +280,7 @@ const SignupForm = () => {
                   Sign in
                 </motion.p>
               </Link>
-            </p>
+            </div>
           </motion.div>
         </motion.div>
       </motion.div>
