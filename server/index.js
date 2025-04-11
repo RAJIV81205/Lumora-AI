@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv"
 import connectDB from "./config/db.js";
+import UserRoutes from "./routes/UserRoutes.js";
 
 
 const app =express();
@@ -18,6 +19,11 @@ app.use(cors(
 
 const PORT = process.env.PORT
 connectDB();
+
+app.use("/api", UserRoutes);
+
+
+
 
 
 
