@@ -5,7 +5,7 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
   const [subject, setSubject] = useState('');
   const [file, setFile] = useState(null);
   const [error, setError] = useState('');
-  const [extractedText, setExtractedText] = useState(''); // New state for extracted text
+  
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -53,7 +53,7 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
         throw new Error(data.error || 'Failed to upload file');
       }
 
-      setExtractedText(data.text); // Display extracted text
+      console.log(data.text); // Display extracted text
       setFile(null);
       setSubject('');
     } catch (error) {
@@ -129,12 +129,7 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
           </div>
         </form>
 
-        {extractedText && (
-          <div className="mt-6">
-            <h3 className="text-lg font-bold text-gray-800">Extracted Text:</h3>
-            <p className="text-sm text-gray-700 whitespace-pre-wrap">{extractedText}</p>
-          </div>
-        )}
+      
       </div>
     </div>
   );
