@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router'
 import LandingPage from './components/pages/LandingPage'
-import LoginForm from './components/pages/LoginForm'
-import SignupForm from './components/pages/SignupForm'
-import Dashboard from './components/pages/Dashboard'
+import LoginForm from './components/pages/Auth/LoginForm'
+import SignupForm from './components/pages/Auth/SignupForm'
+import Dashboard from './components/pages/Dashboard/Dashboard'
 
 // ScrollToTop component to reset scroll position on route changes
 function ScrollToTop() {
