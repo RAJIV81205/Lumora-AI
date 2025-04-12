@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Sidebar from './Sidebar';
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
@@ -17,14 +18,9 @@ const Chat = () => {
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
-      <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-800">Chat History</h2>
-        </div>
-        <div className="flex-1 overflow-y-auto p-4">
-          {/* Add chat history items here */}
-        </div>
-      </div>
+      <Sidebar />
+          
+     
 
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col bg-white">
