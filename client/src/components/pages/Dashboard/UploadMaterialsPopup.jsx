@@ -5,21 +5,20 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
   const [subject, setSubject] = useState('');
   const [file, setFile] = useState(null);
   const [error, setError] = useState('');
+  const [extractedText, setExtractedText] = useState(''); // New state for extracted text
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
-      // Check file size (5MB = 5 * 1024 * 1024 bytes)
       if (selectedFile.size > 5 * 1024 * 1024) {
         setError('File size should not exceed 5MB');
         setFile(null);
         return;
       }
-      
-      // Check file type
-      const validTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'];
+
+      const validTypes = ['application/pdf'];
       if (!validTypes.includes(selectedFile.type)) {
-        setError('Please upload a PDF or image file (JPEG, PNG)');
+        setError('Please upload a PDF file');
         setFile(null);
         return;
       }
@@ -29,14 +28,10 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
     }
   };
 
-  const url = import.meta.env.VITE_BACKEND_URL
+  const url = import.meta.env.VITE_PYTHON_BACKEND_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!subject.trim()) {
-      setError('Please enter a subject name');
-      return;
-    }
     if (!file) {
       setError('Please select a file');
       return;
@@ -44,10 +39,9 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
 
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('subject', subject);
 
     try {
-      setError(''); // Clear any previous errors
+      setError('');
       const response = await fetch(`${url}/upload-pdf`, {
         method: 'POST',
         body: formData,
@@ -56,16 +50,12 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || data.details || 'Failed to upload file');
+        throw new Error(data.error || 'Failed to upload file');
       }
 
-      console.log('File processed successfully:', data);
-      
-      // Reset form
-      setSubject('');
+      setExtractedText(data.text); // Display extracted text
       setFile(null);
-      setError('');
-      onClose();
+      setSubject('');
     } catch (error) {
       console.error('Upload error:', error);
       setError(error.message || 'Failed to upload file. Please try again.');
@@ -88,22 +78,8 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
-              Subject Name
-            </label>
-            <input
-              type="text"
-              id="subject"
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Enter subject name"
-            />
-          </div>
-
-          <div>
             <label htmlFor="file" className="block text-sm font-medium text-gray-700 mb-1">
-              Upload File (PDF or Image, max 5MB)
+              Upload File (PDF, max 5MB)
             </label>
             <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg">
               <div className="space-y-1 text-center">
@@ -118,15 +94,13 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
                       name="file-upload"
                       type="file"
                       className="sr-only"
-                      accept=".pdf,.jpg,.jpeg,.png"
+                      accept=".pdf"
                       onChange={handleFileChange}
                     />
                   </label>
                   <p className="pl-1">or drag and drop</p>
                 </div>
-                <p className="text-xs text-gray-500">
-                  PDF, PNG, JPG up to 5MB
-                </p>
+                <p className="text-xs text-gray-500">PDF up to 5MB</p>
               </div>
             </div>
             {file && (
@@ -136,9 +110,7 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
             )}
           </div>
 
-          {error && (
-            <p className="text-red-500 text-sm">{error}</p>
-          )}
+          {error && <p className="text-red-500 text-sm">{error}</p>}
 
           <div className="flex justify-end space-x-3 mt-6">
             <button
@@ -156,9 +128,16 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
             </button>
           </div>
         </form>
+
+        {extractedText && (
+          <div className="mt-6">
+            <h3 className="text-lg font-bold text-gray-800">Extracted Text:</h3>
+            <p className="text-sm text-gray-700 whitespace-pre-wrap">{extractedText}</p>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default UploadMaterialsPopup; 
+export default UploadMaterialsPopup;
