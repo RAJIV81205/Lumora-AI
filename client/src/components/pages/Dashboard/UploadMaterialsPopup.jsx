@@ -36,9 +36,15 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
       setError('Please select a file');
       return;
     }
+    
+    if (!subject.trim()) {
+      setError('Please enter a subject name');
+      return;
+    }
 
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('subject', subject);
 
     try {
       setError('');
@@ -77,6 +83,20 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
         <h2 className="text-2xl font-bold text-gray-800 mb-6 font-nunito-sans">Upload Materials</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
+              Subject Name
+            </label>
+            <input
+              type="text"
+              id="subject"
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Enter subject name"
+            />
+          </div>
+          
           <div>
             <label htmlFor="file" className="block text-sm font-medium text-gray-700 mb-1">
               Upload File (PDF, max 5MB)

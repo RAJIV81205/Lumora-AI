@@ -1,54 +1,106 @@
 import React from 'react'
 import { LayoutDashboard, BookOpen, HelpCircle, CreditCard, BarChart3, Settings, Sparkles } from 'lucide-react'
-import { Link } from 'react-router'
+import { Link, useLocation } from 'react-router'
 
 const Sidebar = () => {
+    const location = useLocation();
+    
+    // Helper function to determine if a link is active
+    const isActive = (path) => {
+        return location.pathname === path || location.pathname.startsWith(`${path}/`);
+    };
+    
     return (
-        <nav className="col-span-2 bg-white rounded-xl shadow p-4">
+        <nav className="col-span-2 bg-white rounded-xl shadow p-4 min-h-screen">
             <ul className="space-y-2">
                 <li>
-                    <div className="flex items-center space-x-3 text-blue-600 font-medium p-3 rounded-lg bg-blue-50 hover:bg-blue-100 transition-all duration-300 cursor-pointer">
-                        <LayoutDashboard className="h-5 w-5" />
-                        <span>Dashboard</span>
-                    </div>
+                    <Link to="/dashboard">
+                        <div className={`flex items-center space-x-3 p-3 rounded-lg transition-all duration-300 cursor-pointer ${
+                            isActive('/dashboard') && location.pathname !== '/dashboard/materials' && 
+                            location.pathname !== '/dashboard/quizzes' && 
+                            location.pathname !== '/dashboard/flashcards' && 
+                            location.pathname !== '/dashboard/progress' && 
+                            location.pathname !== '/dashboard/chat' && 
+                            location.pathname !== '/dashboard/settings'
+                            ? 'text-blue-600 font-medium bg-blue-50 hover:bg-blue-100' 
+                            : 'hover:bg-gray-50'
+                        }`}>
+                            <LayoutDashboard className="h-5 w-5" />
+                            <span>Dashboard</span>
+                        </div>
+                    </Link>
                 </li>
                 <li>
-                    <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-all duration-300 cursor-pointer">
-                        <BookOpen className="h-5 w-5" />
-                        <span>My Materials</span>
-                    </div>
+                    <Link to="/dashboard/materials">
+                        <div className={`flex items-center space-x-3 p-3 rounded-lg transition-all duration-300 cursor-pointer ${
+                            isActive('/dashboard/materials') 
+                            ? 'text-blue-600 font-medium bg-blue-50 hover:bg-blue-100' 
+                            : 'hover:bg-gray-50'
+                        }`}>
+                            <BookOpen className="h-5 w-5" />
+                            <span>My Materials</span>
+                        </div>
+                    </Link>
                 </li>
                 <li>
-                    <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-all duration-300 cursor-pointer">
-                        <HelpCircle className="h-5 w-5" />
-                        <span>Quizzes</span>
-                    </div>
+                    <Link to="/dashboard/quizzes">
+                        <div className={`flex items-center space-x-3 p-3 rounded-lg transition-all duration-300 cursor-pointer ${
+                            isActive('/dashboard/quizzes') 
+                            ? 'text-blue-600 font-medium bg-blue-50 hover:bg-blue-100' 
+                            : 'hover:bg-gray-50'
+                        }`}>
+                            <HelpCircle className="h-5 w-5" />
+                            <span>Quizzes</span>
+                        </div>
+                    </Link>
                 </li>
                 <li>
-                    <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-all duration-300 cursor-pointer">
-                        <CreditCard className="h-5 w-5" />
-                        <span>Flashcards</span>
-                    </div>
+                    <Link to="/dashboard/flashcards">
+                        <div className={`flex items-center space-x-3 p-3 rounded-lg transition-all duration-300 cursor-pointer ${
+                            isActive('/dashboard/flashcards') 
+                            ? 'text-blue-600 font-medium bg-blue-50 hover:bg-blue-100' 
+                            : 'hover:bg-gray-50'
+                        }`}>
+                            <CreditCard className="h-5 w-5" />
+                            <span>Flashcards</span>
+                        </div>
+                    </Link>
                 </li>
                 <li>
-                    <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-all duration-300 cursor-pointer">
-                        <BarChart3 className="h-5 w-5" />
-                        <span>Progress</span>
-                    </div>
+                    <Link to="/dashboard/progress">
+                        <div className={`flex items-center space-x-3 p-3 rounded-lg transition-all duration-300 cursor-pointer ${
+                            isActive('/dashboard/progress') 
+                            ? 'text-blue-600 font-medium bg-blue-50 hover:bg-blue-100' 
+                            : 'hover:bg-gray-50'
+                        }`}>
+                            <BarChart3 className="h-5 w-5" />
+                            <span>Progress</span>
+                        </div>
+                    </Link>
                 </li>
                 <li>
                     <Link to="/dashboard/chat">
-                        <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-all duration-300 cursor-pointer">
+                        <div className={`flex items-center space-x-3 p-3 rounded-lg transition-all duration-300 cursor-pointer ${
+                            isActive('/dashboard/chat') 
+                            ? 'text-blue-600 font-medium bg-blue-50 hover:bg-blue-100' 
+                            : 'hover:bg-gray-50'
+                        }`}>
                             <Sparkles className="h-5 w-5" />
                             <span>AI Assistant</span>
                         </div>
                     </Link>
                 </li>
                 <li className="border-t border-gray-100 pt-2 mt-4">
-                    <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-all duration-300 cursor-pointer">
-                        <Settings className="h-5 w-5" />
-                        <span>Settings</span>
-                    </div>
+                    <Link to="/dashboard/settings">
+                        <div className={`flex items-center space-x-3 p-3 rounded-lg transition-all duration-300 cursor-pointer ${
+                            isActive('/dashboard/settings') 
+                            ? 'text-blue-600 font-medium bg-blue-50 hover:bg-blue-100' 
+                            : 'hover:bg-gray-50'
+                        }`}>
+                            <Settings className="h-5 w-5" />
+                            <span>Settings</span>
+                        </div>
+                    </Link>
                 </li>
             </ul>
         </nav>
