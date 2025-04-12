@@ -29,7 +29,9 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const url = import.meta.env.VITE_BACKEND_URL
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!subject.trim()) {
       setError('Please enter a subject name');
@@ -39,9 +41,35 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
       setError('Please select a file');
       return;
     }
-    // TODO: Handle file upload logic here
-    console.log('Uploading:', { subject, file });
-    onClose();
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('subject', subject);
+
+    try {
+      setError(''); // Clear any previous errors
+      const response = await fetch(`${url}/upload-pdf`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || data.details || 'Failed to upload file');
+      }
+
+      console.log('File processed successfully:', data);
+      
+      // Reset form
+      setSubject('');
+      setFile(null);
+      setError('');
+      onClose();
+    } catch (error) {
+      console.error('Upload error:', error);
+      setError(error.message || 'Failed to upload file. Please try again.');
+    }
   };
 
   if (!isOpen) return null;
