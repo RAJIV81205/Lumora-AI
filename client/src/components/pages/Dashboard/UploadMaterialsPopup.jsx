@@ -56,7 +56,7 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
           <X className="h-6 w-6" />
         </button>
 
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">Upload Materials</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-6 font-nunito-sans">Upload Materials</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
