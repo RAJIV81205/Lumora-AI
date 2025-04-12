@@ -2,8 +2,11 @@ import React, { useState } from 'react'
 import Sidebar from './Sidebar'
 import Navbar from './Navbar'
 import { FileText, MoreVertical, CheckCircle, Clock, ArrowRight, Upload } from 'lucide-react'
+import UploadMaterialsPopup from './UploadMaterialsPopup'
 
 const Material = () => {
+  const [isUploadPopupOpen, setIsUploadPopupOpen] = useState(false);    
+
   // This would typically come from your backend/state management
   const [materials] = useState([
     {
@@ -37,6 +40,10 @@ const Material = () => {
 
   return (
     <div className="font-sans bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-md p-6 w-full">
+        <UploadMaterialsPopup
+            isOpen={isUploadPopupOpen}
+            onClose={() => setIsUploadPopupOpen(false)}
+        />
       <Navbar />
       
       <main className="grid grid-cols-12 gap-6">
@@ -50,7 +57,7 @@ const Material = () => {
                 <p className="text-gray-500">Manage and view your uploaded study materials</p>
               </div>
               <div className="flex items-center space-x-4">
-                <button className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium flex items-center space-x-2 hover:bg-blue-700 transition-all duration-300">
+                <button className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium flex items-center space-x-2 hover:bg-blue-700 transition-all duration-300" onClick={() => setIsUploadPopupOpen(true)}>
                   <Upload className="h-5 w-5" />
                   <span>Upload New</span>
                 </button>
