@@ -110,7 +110,7 @@ const Dashboard = () => {
                                         </div>
                                         <div className="flex-1">
                                             <h3 className="font-medium capitalize">{mate.subName}</h3>
-                                            <p className="text-sm text-gray-500">8 pages • Last opened yesterday</p>
+                                            <p className="text-sm text-gray-500">Uploaded on {mate.addedAt}</p>
                                             <div className="flex items-center mt-2 text-sm">
                                                 <span className="text-amber-600 font-medium flex items-center">
                                                     <Clock className="h-4 w-4 mr-1" />

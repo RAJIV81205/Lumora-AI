@@ -60,8 +60,8 @@ router.post("/verify-token",verifyToken, async (req,res) =>{
 })
 
 router.post("/materials/save",verifyToken, async (req,res) =>{
-    const {subject,content,summary} = req.body;
-    if(!subject || !content || !summary){
+    const {subject,content,summary,study_guide} = req.body;
+    if(!subject || !content || !summary || !study_guide){
         return res.status(400).json({message:"Please fill all the fields"})
     }
     try{
@@ -72,7 +72,8 @@ router.post("/materials/save",verifyToken, async (req,res) =>{
         user.material.push({
             subName : subject,
             content,
-            summary
+            summary,
+            study_guide
         })
         await user.save();
         res.status(200).json({message:"Materials saved successfully"})

@@ -13,6 +13,7 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [extractedText, setExtractedText] = useState('');
   const [summary, setSummary] = useState('');
+  const [studyGuide, setStudyGuide] = useState('');
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
 
@@ -88,6 +89,7 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
     setError('');
     setExtractedText('');
     setSummary('');
+    setStudyGuide('');
 
     const formData = new FormData();
     formData.append('file', file);
@@ -127,6 +129,24 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
       setSummary(summaryData.summary);
       console.log('Summary:', summaryData.summary);
 
+      // Generate study guide
+      const studyGuideResponse = await fetch(`${url}/study-guide`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: uploadData.text }),
+      });
+
+      const studyGuideData = await studyGuideResponse.json();
+
+      if (!studyGuideResponse.ok) {
+        throw new Error(studyGuideData.error || 'Failed to generate study guide');
+      }
+
+      setStudyGuide(studyGuideData.study_guide);
+      console.log('Study Guide:', studyGuideData.study_guide);
+
       const saveData = await fetch ( `${backendUrl}/materials/save`,{
         method:"POST",
         headers:{
@@ -137,6 +157,7 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
           subject: subject,
           content: uploadData.text,
           summary: summaryData.summary,
+          study_guide: studyGuideData.study_guide,
         }),
       })
 
@@ -146,7 +167,6 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
       }
       console.log('Materials saved successfully:', saveResponse);
     
-
       setFile(null);
       setSubject('');
     } catch (error) {
@@ -253,7 +273,7 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
           </div>
         )}
 
-        {(extractedText || summary) && !isLoading && (
+        {(extractedText || summary || studyGuide) && !isLoading && (
           <div className="mt-6 space-y-4">
             {extractedText && (
               <div>
@@ -292,6 +312,39 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
                     }}
                   >
                     {summary}
+                  </ReactMarkdown>
+                </div>
+              </div>
+            )}
+
+            {studyGuide && (
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">Study Guide</h3>
+                <div className="bg-gray-50 p-4 rounded-lg max-h-96 overflow-y-auto prose prose-sm max-w-none">
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm, remarkMath]}
+                    rehypePlugins={[rehypeKatex]}
+                    components={{
+                      // Customize link rendering to open in new tab
+                      a: ({ node, ...props }) => (
+                        <a {...props} target="_blank" rel="noopener noreferrer" />
+                      ),
+                      // Ensure code blocks have proper styling
+                      code: ({ node, inline, className, children, ...props }) => {
+                        const match = /language-(\w+)/.exec(className || '');
+                        return !inline && match ? (
+                          <code className={`${className} block bg-gray-100 p-2 rounded`} {...props}>
+                            {children}
+                          </code>
+                        ) : (
+                          <code className={`${className} bg-gray-100 px-1 py-0.5 rounded`} {...props}>
+                            {children}
+                          </code>
+                        );
+                      },
+                    }}
+                  >
+                    {studyGuide}
                   </ReactMarkdown>
                 </div>
               </div>

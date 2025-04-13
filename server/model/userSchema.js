@@ -1,5 +1,19 @@
 import mongoose from 'mongoose';
 
+const formatIndianDate = () => {
+    const now = new Date();
+    return now.toLocaleString("en-IN", {
+        timeZone: "Asia/Kolkata",
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true
+    });
+};
+
 const userSchema = new mongoose.Schema({
     email: {
         type: String,
@@ -18,7 +32,6 @@ const userSchema = new mongoose.Schema({
         subName: {
             type: String,
             required: true
-            
         },
         content: {
             type: String,
@@ -28,14 +41,18 @@ const userSchema = new mongoose.Schema({
             type: String,
             required: true
         },
+        study_guide: {
+            type: String,
+            required: true
+        },
         addedAt: {
-            type: Date,
-            default: Date.now
+            type: String,  // Changed from Date to String
+            default: formatIndianDate
         }
     }],
     createdAt: {
-        type: Date,
-        default: Date.now
+        type: String,  // Changed from Date to String
+        default: formatIndianDate
     }
 });
 
