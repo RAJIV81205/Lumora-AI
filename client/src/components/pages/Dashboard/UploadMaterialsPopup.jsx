@@ -5,7 +5,9 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
   const [subject, setSubject] = useState('');
   const [file, setFile] = useState(null);
   const [error, setError] = useState('');
-  
+  const [isLoading, setIsLoading] = useState(false);
+  const [extractedText, setExtractedText] = useState('');
+  const [summary, setSummary] = useState('');
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -42,29 +44,56 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
       return;
     }
 
+    setIsLoading(true);
+    setError('');
+    setExtractedText('');
+    setSummary('');
+
     const formData = new FormData();
     formData.append('file', file);
     formData.append('subject', subject);
 
     try {
-      setError('');
-      const response = await fetch(`${url}/upload-pdf`, {
+      // First, upload and extract text from PDF
+      const uploadResponse = await fetch(`${url}/upload-pdf`, {
         method: 'POST',
         body: formData,
       });
 
-      const data = await response.json();
+      const uploadData = await uploadResponse.json();
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to upload file');
+      if (!uploadResponse.ok) {
+        throw new Error(uploadData.error || 'Failed to upload file');
       }
 
-      console.log(data.text); // Display extracted text
+      setExtractedText(uploadData.text);
+      console.log('Extracted Text:', uploadData.text);
+
+      // Then, get the summary
+      const summaryResponse = await fetch(`${url}/summarize`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: uploadData.text }),
+      });
+
+      const summaryData = await summaryResponse.json();
+
+      if (!summaryResponse.ok) {
+        throw new Error(summaryData.error || 'Failed to generate summary');
+      }
+
+      setSummary(summaryData.summary);
+      console.log('Summary:', summaryData.summary);
+
       setFile(null);
       setSubject('');
     } catch (error) {
-      console.error('Upload error:', error);
-      setError(error.message || 'Failed to upload file. Please try again.');
+      console.error('Error:', error);
+      setError(error.message || 'An error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -72,7 +101,7 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl p-6 w-full max-w-md relative">
+      <div className="bg-white rounded-xl p-6 w-full max-w-4xl relative max-h-[90vh] overflow-y-auto">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
@@ -142,14 +171,42 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              disabled={isLoading}
+              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
             >
-              Upload
+              {isLoading ? 'Processing...' : 'Upload'}
             </button>
           </div>
         </form>
 
-      
+        {isLoading && (
+          <div className="mt-6 flex flex-col items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <p className="mt-2 text-gray-600">Processing your document...</p>
+          </div>
+        )}
+
+        {(extractedText || summary) && !isLoading && (
+          <div className="mt-6 space-y-4">
+            {extractedText && (
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">Extracted Text</h3>
+                <div className="bg-gray-50 p-4 rounded-lg max-h-60 overflow-y-auto">
+                  <p className="text-gray-700 whitespace-pre-wrap">{extractedText}</p>
+                </div>
+              </div>
+            )}
+            
+            {summary && (
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">Summary</h3>
+                <div className="bg-gray-50 p-4 rounded-lg max-h-60 overflow-y-auto">
+                  <p className="text-gray-700 whitespace-pre-wrap">{summary}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
