@@ -17,6 +17,8 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
 
+  const loadingText = document.getElementById('loadingText');
+
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
@@ -63,7 +65,7 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       const droppedFile = e.dataTransfer.files[0];
       validateAndSetFile(droppedFile);
@@ -79,7 +81,7 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
       setError('Please select a file');
       return;
     }
-    
+
     if (!subject.trim()) {
       setError('Please enter a subject name');
       return;
@@ -96,6 +98,7 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
     formData.append('subject', subject);
 
     try {
+      loadingText.innerText = 'Processing your document...';
       // First, upload and extract text from PDF
       const uploadResponse = await fetch(`${url}/upload-pdf`, {
         method: 'POST',
@@ -111,6 +114,7 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
       setExtractedText(uploadData.text);
       console.log('Extracted Text:', uploadData.text);
 
+      loadingText.innerText = 'Summarizing your document...';
       // Then, get the summary
       const summaryResponse = await fetch(`${url}/summarize`, {
         method: 'POST',
@@ -129,6 +133,7 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
       setSummary(summaryData.summary);
       console.log('Summary:', summaryData.summary);
 
+      loadingText.innerText = 'Generating study guide...';
       // Generate study guide
       const studyGuideResponse = await fetch(`${url}/study-guide`, {
         method: 'POST',
@@ -147,10 +152,11 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
       setStudyGuide(studyGuideData.study_guide);
       console.log('Study Guide:', studyGuideData.study_guide);
 
-      const saveData = await fetch ( `${backendUrl}/materials/save`,{
-        method:"POST",
-        headers:{
-          "Content-Type":"application/json",
+      loadingText.innerText = 'Saving your materials...';
+      const saveData = await fetch(`${backendUrl}/materials/save`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
           "authorization": `${localStorage.getItem('token')}`,
         },
         body: JSON.stringify({
@@ -166,7 +172,7 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
         throw new Error(saveResponse.error || 'Failed to save materials');
       }
       console.log('Materials saved successfully:', saveResponse);
-    
+
       setFile(null);
       setSubject('');
     } catch (error) {
@@ -205,16 +211,16 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
               placeholder="Enter subject name"
             />
           </div>
-          
+
           <div>
             <label htmlFor="file" className="block text-sm font-medium text-gray-700 mb-1">
               Upload File (PDF, max 5MB)
             </label>
-            <div 
+            <div
               className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'} border-dashed rounded-lg`}
               onDragEnter={handleDragEnter}
               onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave} 
+              onDragLeave={handleDragLeave}
               onDrop={handleDrop}
             >
               <div className="space-y-1 text-center">
@@ -268,8 +274,10 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
 
         {isLoading && (
           <div className="mt-6 flex flex-col items-center justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            <p className="mt-2 text-gray-600">Processing your document...</p>
+            <span
+              className="w-12 h-12 border-4 border-white border-b-transparent rounded-full inline-block box-border animate-spin"
+            ></span>
+            <p className="mt-2 text-gray-600" id='loadingText'>Processing your document...</p>
           </div>
         )}
 
@@ -283,7 +291,7 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
                 </div>
               </div>
             )}
-            
+
             {summary && (
               <div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">Summary</h3>
