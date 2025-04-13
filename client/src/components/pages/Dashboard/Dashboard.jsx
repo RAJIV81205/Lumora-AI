@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Layers,
     Upload,
@@ -14,15 +14,58 @@ import {
 import Sidebar from "./Sidebar";
 import UploadMaterialsPopup from "./UploadMaterialsPopup";
 import Navbar from "./Navbar";
+import { useNavigate } from "react-router";
 
 const Dashboard = () => {
     const [isUploadPopupOpen, setIsUploadPopupOpen] = useState(false);
+    const navigate = useNavigate();
+    const [user, setUser] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const url = import.meta.env.VITE_BACKEND_URL;
+
+    const verifyToken = async (token) => {
+        try {
+            const response = await fetch(`${url}/verify-token`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `${token}`
+                }
+            });
+            const data = await response.json();
+            if (response.ok) {
+                setUser(data.user);
+            } else {
+                localStorage.removeItem('token');
+                navigate('/login');
+            }
+        } catch (error) {
+            console.error('Token verification failed:', error);
+            localStorage.removeItem('token');
+            navigate('/login');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
+        } else {
+            verifyToken(token);
+        }
+    }, [navigate, url]);
+
+    if (isLoading) {
+        return <div className="min-h-screen w-full flex justify-center items-center"><span class="loader"></span></div>;
+    }
 
     return (
         <div className="font-sans bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-md p-6 w-full">
 
             <Navbar />
-            
+
 
             <UploadMaterialsPopup
                 isOpen={isUploadPopupOpen}
@@ -35,7 +78,7 @@ const Dashboard = () => {
 
                 <section className="col-span-7 space-y-6">
                     <div className="bg-gradient-to-r from-green-600 to-green-400 text-white rounded-xl p-6 relative overflow-hidden group">
-                        <h2 className="text-2xl font-bold mb-3">Welcome back, John!</h2>
+                        <h2 className="text-2xl font-bold mb-3">Welcome back, {user?.username || 'User'}!</h2>
                         <p className="text-green-100 mb-6 max-w-md">Continue your learning journey with AI-powered assistance. Upload new materials or continue from where you left off.</p>
                         <div className="flex space-x-4">
                             <button className="bg-white text-gray-700 px-4 py-2 rounded-lg font-medium flex items-center space-x-2 hover:shadow-lg transition-all duration-300" onClick={() => setIsUploadPopupOpen(true)}>

@@ -58,7 +58,7 @@ router.post("/login" , async (req,res) =>{
 })
 
 router.post("/verify-token",verifyToken, async (req,res) =>{
-    res.status(200).json({message:"Token is valid"})
+    res.status(200).json({message:"Token is valid" , user:req.user})
 })
 
 export default router;
