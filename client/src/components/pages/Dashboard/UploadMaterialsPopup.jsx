@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { X } from 'lucide-react';
 
 const UploadMaterialsPopup = ({ isOpen, onClose }) => {
@@ -8,25 +8,59 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [extractedText, setExtractedText] = useState('');
   const [summary, setSummary] = useState('');
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef(null);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
-      if (selectedFile.size > 5 * 1024 * 1024) {
-        setError('File size should not exceed 5MB');
-        setFile(null);
-        return;
-      }
+      validateAndSetFile(selectedFile);
+    }
+  };
 
-      const validTypes = ['application/pdf'];
-      if (!validTypes.includes(selectedFile.type)) {
-        setError('Please upload a PDF file');
-        setFile(null);
-        return;
-      }
+  const validateAndSetFile = (selectedFile) => {
+    if (selectedFile.size > 5 * 1024 * 1024) {
+      setError('File size should not exceed 5MB');
+      setFile(null);
+      return;
+    }
 
-      setFile(selectedFile);
-      setError('');
+    const validTypes = ['application/pdf'];
+    if (!validTypes.includes(selectedFile.type)) {
+      setError('Please upload a PDF file');
+      setFile(null);
+      return;
+    }
+
+    setFile(selectedFile);
+    setError('');
+  };
+
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const droppedFile = e.dataTransfer.files[0];
+      validateAndSetFile(droppedFile);
     }
   };
 
@@ -101,7 +135,7 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl p-6 w-full max-w-4xl relative max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-xl p-6 w-full max-w-3xl relative max-h-[90vh] overflow-y-auto">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
@@ -130,7 +164,13 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
             <label htmlFor="file" className="block text-sm font-medium text-gray-700 mb-1">
               Upload File (PDF, max 5MB)
             </label>
-            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg">
+            <div 
+              className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'} border-dashed rounded-lg`}
+              onDragEnter={handleDragEnter}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave} 
+              onDrop={handleDrop}
+            >
               <div className="space-y-1 text-center">
                 <div className="flex text-sm text-gray-600">
                   <label
@@ -145,6 +185,7 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
                       className="sr-only"
                       accept=".pdf"
                       onChange={handleFileChange}
+                      ref={fileInputRef}
                     />
                   </label>
                   <p className="pl-1">or drag and drop</p>
