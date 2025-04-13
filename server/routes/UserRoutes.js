@@ -2,7 +2,7 @@ import User from "../model/userSchema.js";
 import express from "express";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
-
+import verifyToken from "../middleware/verifyToken.js"
 const router = express.Router();
 
 
@@ -39,7 +39,7 @@ router.post("/login" , async (req,res) =>{
     const {email,password} = req.body;
     if(!email || !password){
         return res.status(400).json({message:"Please fill all the fields"})
-    }
+    } 
     try{
         const user = await User.findOne({email});
         if(!user){
@@ -49,12 +49,16 @@ router.post("/login" , async (req,res) =>{
         if(!isMatch){
             return res.status(400).json({message:"Invalid credentials"})
         }
-        const token = jwt.sign({id:user._id}, process.env.JWT_SECRET, {expiresIn: "1h"});
+        const token = jwt.sign({id:user._id}, process.env.JWT_SECRET, {expiresIn: "7d"});
         res.status(200).json({token})
     }catch(err){
         console.error(err);
         res.status(500).json({message:"Server error"})
     }
+})
+
+router.post("/verify-token",verifyToken, async (req,res) =>{
+    res.status(200).json({message:"Token is valid"})
 })
 
 export default router;

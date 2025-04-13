@@ -1,19 +1,71 @@
 import React, { useState } from 'react'
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { motion } from 'framer-motion'
 
 const LoginForm = () => {
+
+  const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false)
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   })
 
-  const handleSubmit = (e) => {
+  const url = import.meta.env.VITE_BACKEND_URL;
+
+  const verifyToken = async () => {
+    try {
+      const response = await fetch(`${url}/verify-token`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `${token}`
+        }
+      })
+      const data = await response.json()
+      if (response.ok) {
+        navigate('/dashboard')
+      }
+    } catch (error) {
+      console.error('Token verification failed:', error)
+      localStorage.removeItem('token')
+    }
+
+  }
+
+  const token = localStorage.getItem('token')
+  if (token) {
+    verifyToken()
+  }
+
+
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // Handle login logic here
-    console.log('Login attempt:', formData)
+    try {
+      const response = await fetch(`${url}/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      })
+      const data = await response.json()
+
+      if (response.ok) {
+        alert('Login successful')
+        localStorage.setItem('token', data.token)
+        navigate('/dashboard')
+      } else {
+        alert(data.message)
+      }
+
+    } catch (error) {
+      console.error('Login failed:', error)
+      alert('Login failed. Please check your credentials.')
+    }
+
   }
 
   const handleChange = (e) => {
@@ -27,9 +79,9 @@ const LoginForm = () => {
   // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { 
+    visible: {
       opacity: 1,
-      transition: { 
+      transition: {
         duration: 0.5,
         when: "beforeChildren",
         staggerChildren: 0.1
@@ -39,15 +91,15 @@ const LoginForm = () => {
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
-    visible: { 
-      y: 0, 
+    visible: {
+      y: 0,
       opacity: 1,
       transition: { duration: 0.5 }
     }
   }
 
   const buttonVariants = {
-    hover: { 
+    hover: {
       scale: 1.05,
       boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.1)",
       transition: { duration: 0.3 }
@@ -56,19 +108,19 @@ const LoginForm = () => {
   }
 
   return (
-    <motion.div 
+    <motion.div
       className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-200 to-white px-4 sm:px-6 w-full"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
     >
-      <motion.div 
+      <motion.div
         className="w-full max-w-md"
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.2 }}
       >
-        <motion.div 
+        <motion.div
           className="bg-white rounded-2xl shadow-xl p-4 sm:p-6 md:p-8 border border-gray-100"
           variants={containerVariants}
           initial="hidden"
@@ -76,9 +128,9 @@ const LoginForm = () => {
         >
           <motion.div className="text-center mb-6 sm:mb-8" variants={itemVariants}>
             <div className="flex items-center justify-center gap-2 mb-3 sm:mb-4">
-              <motion.svg 
-                className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" 
-                viewBox="0 0 24 24" 
+              <motion.svg
+                className="w-6 h-6 sm:w-8 sm:h-8 text-green-600"
+                viewBox="0 0 24 24"
                 fill="currentColor"
                 whileHover={{ rotate: 360 }}
                 transition={{ duration: 0.8 }}
@@ -159,8 +211,8 @@ const LoginForm = () => {
                   Remember me
                 </label>
               </div>
-              <motion.a 
-                href="#" 
+              <motion.a
+                href="#"
                 className="text-xs sm:text-sm font-medium text-green-600 hover:text-green-700 font-nunito-sans"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -184,7 +236,7 @@ const LoginForm = () => {
             <div className="text-xs sm:text-sm text-gray-600 font-nunito-sans">
               Don't have an account? {' '}
               <Link to="/signup">
-                <motion.p 
+                <motion.p
                   className="font-medium text-green-600 hover:text-green-700"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}

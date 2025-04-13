@@ -1,11 +1,12 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import { User } from "../models/User";
+import User from "../model/userSchema.js";
 
 dotenv.config();
 
 const verifyToken = async (req, res, next) => {
     const token = req.headers["authorization"];
+    
     if (!token) {
         return res.status(403).send("A token is required for authentication");
     }
