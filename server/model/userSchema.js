@@ -18,6 +18,7 @@ const userSchema = new mongoose.Schema({
         subName: {
             type: String,
             required: true
+            
         },
         content: {
             type: String,
@@ -26,6 +27,10 @@ const userSchema = new mongoose.Schema({
         summary: {
             type: String,
             required: true
+        },
+        addedAt: {
+            type: Date,
+            default: Date.now
         }
     }],
     createdAt: {
