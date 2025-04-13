@@ -14,7 +14,7 @@ import {
 import Sidebar from "./Sidebar";
 import UploadMaterialsPopup from "./UploadMaterialsPopup";
 import Navbar from "./Navbar";
-import { useNavigate } from "react-router";
+import { useNavigate, Link } from "react-router";
 
 const Dashboard = () => {
     const [isUploadPopupOpen, setIsUploadPopupOpen] = useState(false);
@@ -35,6 +35,7 @@ const Dashboard = () => {
             const data = await response.json();
             if (response.ok) {
                 setUser(data.user);
+                console.log(data.user)
             } else {
                 localStorage.removeItem('token');
                 navigate('/login');
@@ -58,7 +59,7 @@ const Dashboard = () => {
     }, [navigate, url]);
 
     if (isLoading) {
-        return <div className="min-h-screen w-full flex justify-center items-center"><span class="loader"></span></div>;
+        return <div className="min-h-screen w-full flex justify-center items-center"><span className="loader"></span></div>;
     }
 
     return (
@@ -95,71 +96,47 @@ const Dashboard = () => {
                     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                         <div className="flex justify-between items-center mb-6">
                             <h2 className="text-lg font-semibold">Recent Materials</h2>
-                            <a href="#" className="text-blue-600 flex items-center hover:underline">
+                            <Link to="/dashboard/materials" className="text-blue-600 flex items-center hover:underline">
                                 <span>View all</span>
                                 <ArrowRight className="h-4 w-4 ml-1" />
-                            </a>
+                            </Link>
                         </div>
                         <div className="space-y-4">
-                            <div className="flex items-start gap-4 p-4 rounded-lg hover:bg-gray-50 transition-all duration-300 border border-gray-100 hover:border-blue-200">
-                                <div className="p-3 bg-blue-50 rounded-lg text-blue-600">
-                                    <FileText className="h-5 w-5" />
-                                </div>
-                                <div className="flex-1">
-                                    <h3 className="font-medium">Advanced Physics Notes</h3>
-                                    <p className="text-sm text-gray-500">16 pages • Last opened 2 days ago</p>
-                                    <div className="flex items-center mt-2 text-sm">
-                                        <span className="text-green-600 font-medium flex items-center">
-                                            <CheckCircle className="h-4 w-4 mr-1" />
-                                            AI summary available
-                                        </span>
+                            {user?.material?.length != 0 && (
+                                user?.material?.map((mate, index) => (
+                                    <div key={index} className="flex items-start gap-4 p-4 rounded-lg hover:bg-gray-50 transition-all duration-300 border border-gray-100 hover:border-blue-200">
+                                        <div className="p-3 bg-blue-50 rounded-lg text-blue-600">
+                                            <FileText className="h-5 w-5" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <h3 className="font-medium capitalize">{mate.subName}</h3>
+                                            <p className="text-sm text-gray-500">8 pages • Last opened yesterday</p>
+                                            <div className="flex items-center mt-2 text-sm">
+                                                <span className="text-amber-600 font-medium flex items-center">
+                                                    <Clock className="h-4 w-4 mr-1" />
+                                                    AI processing...
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <button className="p-2 rounded-full hover:bg-gray-200 transition-all duration-300">
+                                            <MoreVertical className="h-5 w-5" />
+                                        </button>
                                     </div>
-                                </div>
-                                <button className="p-2 rounded-full hover:bg-gray-200 transition-all duration-300">
-                                    <MoreVertical className="h-5 w-5" />
-                                </button>
-                            </div>
+                                ))
+                            )}
 
-                            <div className="flex items-start gap-4 p-4 rounded-lg hover:bg-gray-50 transition-all duration-300 border border-gray-100 hover:border-blue-200">
-                                <div className="p-3 bg-green-50 rounded-lg text-green-600">
-                                    <FileText className="h-5 w-5" />
-                                </div>
-                                <div className="flex-1">
-                                    <h3 className="font-medium">World History Essay</h3>
-                                    <p className="text-sm text-gray-500">8 pages • Last opened yesterday</p>
-                                    <div className="flex items-center mt-2 text-sm">
-                                        <span className="text-amber-600 font-medium flex items-center">
-                                            <Clock className="h-4 w-4 mr-1" />
-                                            AI processing...
-                                        </span>
-                                    </div>
-                                </div>
-                                <button className="p-2 rounded-full hover:bg-gray-200 transition-all duration-300">
-                                    <MoreVertical className="h-5 w-5" />
-                                </button>
-                            </div>
 
-                            <div className="flex items-start gap-4 p-4 rounded-lg hover:bg-gray-50 transition-all duration-300 border border-gray-100 hover:border-blue-200">
-                                <div className="p-3 bg-purple-50 rounded-lg text-purple-600">
-                                    <Image className="h-5 w-5" />
-                                </div>
-                                <div className="flex-1">
-                                    <h3 className="font-medium">Biology Diagrams</h3>
-                                    <p className="text-sm text-gray-500">12 images • Last opened 3 days ago</p>
-                                    <div className="flex items-center mt-2 text-sm">
-                                        <span className="text-green-600 font-medium flex items-center">
-                                            <CheckCircle className="h-4 w-4 mr-1" />
-                                            AI notes available
-                                        </span>
-                                    </div>
-                                </div>
-                                <button className="p-2 rounded-full hover:bg-gray-200 transition-all duration-300">
-                                    <MoreVertical className="h-5 w-5" />
-                                </button>
-                            </div>
+
+
+
+
+
+
+
+
                         </div>
                     </div>
-                </section>
+                </section >
 
                 <aside className="col-span-3 space-y-6">
                     <div className="bg-white rounded-xl shadow p-6">
@@ -238,8 +215,8 @@ const Dashboard = () => {
                         </div>
                     </div>
                 </aside>
-            </main>
-        </div>
+            </main >
+        </div >
     );
 };
 
