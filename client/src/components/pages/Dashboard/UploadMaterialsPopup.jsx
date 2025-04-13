@@ -1,5 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { X } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css';
 
 const UploadMaterialsPopup = ({ isOpen, onClose }) => {
   const [subject, setSubject] = useState('');
@@ -262,8 +267,32 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
             {summary && (
               <div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">Summary</h3>
-                <div className="bg-gray-50 p-4 rounded-lg max-h-60 overflow-y-auto">
-                  <p className="text-gray-700 whitespace-pre-wrap">{summary}</p>
+                <div className="bg-gray-50 p-4 rounded-lg max-h-60 overflow-y-auto prose prose-sm max-w-none">
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm, remarkMath]}
+                    rehypePlugins={[rehypeKatex]}
+                    components={{
+                      // Customize link rendering to open in new tab
+                      a: ({ node, ...props }) => (
+                        <a {...props} target="_blank" rel="noopener noreferrer" />
+                      ),
+                      // Ensure code blocks have proper styling
+                      code: ({ node, inline, className, children, ...props }) => {
+                        const match = /language-(\w+)/.exec(className || '');
+                        return !inline && match ? (
+                          <code className={`${className} block bg-gray-100 p-2 rounded`} {...props}>
+                            {children}
+                          </code>
+                        ) : (
+                          <code className={`${className} bg-gray-100 px-1 py-0.5 rounded`} {...props}>
+                            {children}
+                          </code>
+                        );
+                      },
+                    }}
+                  >
+                    {summary}
+                  </ReactMarkdown>
                 </div>
               </div>
             )}
