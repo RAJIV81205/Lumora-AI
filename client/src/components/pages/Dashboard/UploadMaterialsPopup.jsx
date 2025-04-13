@@ -65,6 +65,7 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
   };
 
   const url = import.meta.env.VITE_PYTHON_BACKEND_URL;
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -120,6 +121,26 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
 
       setSummary(summaryData.summary);
       console.log('Summary:', summaryData.summary);
+
+      const saveData = await fetch ( `${backendUrl}/materials/save`,{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json",
+          "authorization": `${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify({
+          subject: subject,
+          content: uploadData.text,
+          summary: summaryData.summary,
+        }),
+      })
+
+      const saveResponse = await saveData.json();
+      if (!saveData.ok) {
+        throw new Error(saveResponse.error || 'Failed to save materials');
+      }
+      console.log('Materials saved successfully:', saveResponse);
+    
 
       setFile(null);
       setSubject('');

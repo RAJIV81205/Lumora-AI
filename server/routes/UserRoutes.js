@@ -33,8 +33,6 @@ router.post("/signup" , async (req,res) =>{
 })
 
 
-
-
 router.post("/login" , async (req,res) =>{ 
     const {email,password} = req.body;
     if(!email || !password){
@@ -59,6 +57,29 @@ router.post("/login" , async (req,res) =>{
 
 router.post("/verify-token",verifyToken, async (req,res) =>{
     res.status(200).json({message:"Token is valid" , user:req.user})
+})
+
+router.post("/materials/save",verifyToken, async (req,res) =>{
+    const {subject,content,summary} = req.body;
+    if(!subject || !content || !summary){
+        return res.status(400).json({message:"Please fill all the fields"})
+    }
+    try{
+        const user = await User.findById(req.user.id);
+        if(!user){
+            return res.status(400).json({message:"User not found"})
+        }
+        user.material.push({
+            subName : subject,
+            content,
+            summary
+        })
+        await user.save();
+        res.status(200).json({message:"Materials saved successfully"})
+    }catch(err){
+        console.error(err);
+        res.status(500).json({message:"Server error"})
+    }
 })
 
 export default router;
