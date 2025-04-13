@@ -11,13 +11,12 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
   const [file, setFile] = useState(null);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState('Processing your document...');
   const [extractedText, setExtractedText] = useState('');
   const [summary, setSummary] = useState('');
   const [studyGuide, setStudyGuide] = useState('');
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
-
-  const loadingText = document.getElementById('loadingText');
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -92,13 +91,13 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
     setExtractedText('');
     setSummary('');
     setStudyGuide('');
+    setLoadingMessage('Processing your document...');
 
     const formData = new FormData();
     formData.append('file', file);
     formData.append('subject', subject);
 
     try {
-      loadingText.innerText = 'Processing your document...';
       // First, upload and extract text from PDF
       const uploadResponse = await fetch(`${url}/upload-pdf`, {
         method: 'POST',
@@ -114,7 +113,7 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
       setExtractedText(uploadData.text);
       console.log('Extracted Text:', uploadData.text);
 
-      loadingText.innerText = 'Summarizing your document...';
+      setLoadingMessage('Summarizing your document...');
       // Then, get the summary
       const summaryResponse = await fetch(`${url}/summarize`, {
         method: 'POST',
@@ -133,7 +132,7 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
       setSummary(summaryData.summary);
       console.log('Summary:', summaryData.summary);
 
-      loadingText.innerText = 'Generating study guide...';
+      setLoadingMessage('Generating study guide...');
       // Generate study guide
       const studyGuideResponse = await fetch(`${url}/study-guide`, {
         method: 'POST',
@@ -152,7 +151,7 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
       setStudyGuide(studyGuideData.study_guide);
       console.log('Study Guide:', studyGuideData.study_guide);
 
-      loadingText.innerText = 'Saving your materials...';
+      setLoadingMessage('Saving your materials...');
       const saveData = await fetch(`${backendUrl}/materials/save`, {
         method: "POST",
         headers: {
@@ -277,7 +276,7 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
             <span
               className="w-12 h-12 border-4 border-white border-b-transparent rounded-full inline-block box-border animate-spin"
             ></span>
-            <p className="mt-2 text-gray-600" id='loadingText'>Processing your document...</p>
+            <p className="mt-2 text-gray-600">{loadingMessage}</p>
           </div>
         )}
 
