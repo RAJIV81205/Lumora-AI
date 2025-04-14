@@ -1,74 +1,129 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Sidebar from './Sidebar'
 import Navbar from './Navbar'
-import { FileText, MoreVertical, CheckCircle, Clock, ArrowRight, Upload, File, Image } from 'lucide-react'
+import { FileText, MoreVertical, CheckCircle, Clock, ArrowRight, Upload, File, Image, Loader2 } from 'lucide-react'
 import UploadMaterialsPopup from './UploadMaterialsPopup'
 
 const Material = () => {
   const [isUploadPopupOpen, setIsUploadPopupOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const [materials, setMaterials] = useState([
-    {
-      id: 1,
-      subName: "Advanced Physics Notes",
-      type: "document",
-      summary: "hello there",
-      study_guide: "this is a study guide",
-      addedAt:"2023-10-01",
-      status: "processed",
-      color: "blue"
-    },
-    {
-      id: 2,
-      subName: "World History Essay",
-      type: "document",
-      summary: "hello there",
-      study_guide: "this is a study guide",
-      addedAt:"2023-10-01",
-      status: "processing",
-      color: "green"
-    },
-    {
-      id: 3,
-      subName: "Biology Diagrams",
-      type: "image",
-      summary: "hello there",
-      study_guide: "this is a study guide",
-      addedAt:"2023-10-01",
-      status: "processed",
-      color: "purple"
-    }
-  ]);
+  const [materials, setMaterials] = useState([]);
 
   const url = import.meta.env.VITE_BACKEND_URL
   const token = localStorage.getItem('token')
 
+  useEffect(() => {
+    getMaterials();
+  }, []);
+
   const getMaterials = async () => {
-    const response = await fetch(`${url}/get/materials`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `${token}`
+    try {
+      setIsLoading(true);
+      setError(null);
+      const response = await fetch(`${url}/get/materials`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch materials');
       }
-    })
-    const data = await response.json()
-    if (response.ok) {
-      setMaterials(data)
+      
+      const data = await response.json();
+      setMaterials(data);
+    } catch (err) {
+      setError(err.message);
+      console.error('Error fetching materials:', err);
+    } finally {
+      setIsLoading(false);
     }
   }
 
   const getStatusColor = (status) => {
-    return status === 'processed' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800';
+    switch (status?.toLowerCase()) {
+      case 'processed':
+        return 'bg-green-100 text-green-800';
+      case 'processing':
+        return 'bg-amber-100 text-amber-800';
+      case 'failed':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
   }
 
   const getTypeIcon = (type) => {
-    return type === 'document' ? <File className="h-5 w-5" /> : <Image className="h-5 w-5" />;
+    switch (type?.toLowerCase()) {
+      case 'document':
+        return <File className="h-5 w-5" />;
+      case 'image':
+        return <Image className="h-5 w-5" />;
+      default:
+        return <FileText className="h-5 w-5" />;
+    }
   }
 
   function countWords(text) {
-    if (!text) return 0; // Return 0 if text is empty or null
-    const words = text.trim().split(/\s+/);
-    return words.length;
+    if (!text) return 0;
+    return text.trim().split(/\s+/).length;
+  }
+
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    try {
+      // Parse the date string in the format "DD/MM/YYYY, HH:mm:ss am/pm"
+      const [datePart, timePart] = dateString.split(', ');
+      const [day, month, year] = datePart.split('/');
+      const [time, period] = timePart.split(' ');
+      const [hours, minutes] = time.split(':');
+      
+      // Create a new Date object
+      const date = new Date(year, month - 1, day);
+      date.setHours(parseInt(hours) + (period.toLowerCase() === 'pm' ? 12 : 0), parseInt(minutes));
+      
+      // Format the date
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      });
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return dateString; // Return original string if parsing fails
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-red-600 text-center">
+          <p className="text-lg font-semibold font-open-sans">Error loading materials</p>
+          <p className="text-sm">{error}</p>
+          <button 
+            onClick={getMaterials}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -76,6 +131,7 @@ const Material = () => {
       <UploadMaterialsPopup
         isOpen={isUploadPopupOpen}
         onClose={() => setIsUploadPopupOpen(false)}
+        onUploadSuccess={getMaterials}
       />
       <Navbar />
 
@@ -100,56 +156,73 @@ const Material = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {materials.map((material) => (
-                <div
-                  key={material.id}
-                  className="bg-white rounded-xl border border-gray-200 hover:border-gray-900 transition-all duration-300 overflow-hidden group hover:shadow-lg"
+            {materials.length === 0 ? (
+              <div className="text-center py-12">
+                <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">No materials yet</h3>
+                <p className="text-gray-500 mb-4">Upload your first study material to get started</p>
+                <button
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-all duration-300"
+                  onClick={() => setIsUploadPopupOpen(true)}
                 >
-                  <div className="p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className={`p-3 rounded-lg ${material.color === 'blue' ? 'bg-blue-50 text-blue-600' : material.color === 'green' ? 'bg-green-50 text-green-600' : 'bg-purple-50 text-purple-600'}`}>
-                        {getTypeIcon(material.type)}
+                  Upload Material
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {materials.map((material) => (
+                  <div
+                    key={material.id}
+                    className="bg-white rounded-xl border border-gray-200 hover:border-gray-900 transition-all duration-300 overflow-hidden group hover:shadow-lg"
+                  >
+                    <div className="p-6">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className={`p-3 rounded-lg ${material.color === 'blue' ? 'bg-blue-50 text-blue-600' : material.color === 'green' ? 'bg-green-50 text-green-600' : 'bg-purple-50 text-purple-600'}`}>
+                          {getTypeIcon(material.type)}
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(material.status)}`}>
+                            {material.status || 'Unknown'}
+                          </span>
+                          <button className="p-2 rounded-full hover:bg-gray-100 transition-all duration-300 opacity-0 group-hover:opacity-100">
+                            <MoreVertical className="h-5 w-5 text-gray-500" />
+                          </button>
+                        </div>
                       </div>
-                      <button className="p-2 rounded-full hover:bg-gray-100 transition-all duration-300 opacity-0 group-hover:opacity-100">
-                        <MoreVertical className="h-5 w-5 text-gray-500" />
-                      </button>
-                    </div>
 
-                    <h3 className="font-semibold text-lg text-gray-900 mb-2 line-clamp-1 font-open-sans">{material.subName}</h3>
+                      <h3 className="font-semibold text-lg text-gray-900 mb-2 line-clamp-1 font-open-sans">{material.subName}</h3>
 
-                    <div className="space-y-3">
-                      <div className="flex items-center text-sm text-gray-500">
-                        <FileText className="h-4 w-4 mr-2" />
-                        <span className='font-nunito-sans'>{ countWords(material.summary) + countWords(material.study_guide) } words</span>
+                      <div className="space-y-3">
+                        <div className="flex items-center text-sm text-gray-500">
+                          <FileText className="h-4 w-4 mr-2" />
+                          <span className='font-nunito-sans'>{ countWords(material.summary) + countWords(material.study_guide) } words</span>
+                        </div>
+
+                        <div className="flex items-center text-sm text-gray-500">
+                          <Clock className="h-4 w-4 mr-2" />
+                          <span className='font-nunito-sans'>Added on <span className='text-gray-500 font-nunito-sans'>{formatDate(material.addedAt)}</span></span>
+                        </div>
                       </div>
 
-                      <div className="flex items-center text-sm text-gray-500">
-                        <Clock className="h-4 w-4 mr-2" />
-                        <span className='font-nunito-sans'>Processed on <span className='text-gray-800'>{material.addedAt}</span></span>
+                      <div className="mt-4 space-y-2">
+                        <button className="w-full flex items-center justify-center space-x-2 p-3 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 transition-all duration-300 border-2 border-solid border-blue-50 hover:border-blue-400">
+                          <FileText className="h-5 w-5" />
+                          <span className="font-medium font-open-sans">Summary</span>
+                        </button>
+                        <button className="w-full flex items-center justify-center space-x-2 p-3 rounded-lg bg-green-50 hover:bg-green-100 text-green-700 transition-all duration-300 border-2 border-solid border-green-50 hover:border-green-500">
+                          <File className="h-5 w-5" />
+                          <span className="font-medium font-open-sans">Study Guide</span>
+                        </button>
+                        <button className="w-full flex items-center justify-center space-x-2 p-3 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-700 transition-all duration-300 border-2 border-solid border-purple-50 hover:border-purple-400">
+                          <CheckCircle className="h-5 w-5" />
+                          <span className="font-medium font-open-sans">Quiz</span>
+                        </button>
                       </div>
-
-
-                    </div>
-
-                    <div className="mt-4 space-y-2">
-                      <button className="w-full flex items-center justify-center space-x-2 p-3 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 transition-all duration-300 border-2 border-solid border-blue-50 hover:border-blue-400">
-                        <FileText className="h-5 w-5" />
-                        <span className="font-medium font-open-sans">Summary</span>
-                      </button>
-                      <button className="w-full flex items-center justify-center space-x-2 p-3 rounded-lg bg-green-50 hover:bg-green-100 text-green-700 transition-all duration-300 border-2 border-solid border-green-50 hover:border-green-500">
-                        <File className="h-5 w-5" />
-                        <span className="font-medium font-open-sans">Study Guide</span>
-                      </button>
-                      <button className="w-full flex items-center justify-center space-x-2 p-3 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-700 transition-all duration-300 border-2 border-solid border-purple-50 hover:border-purple-400">
-                        <CheckCircle className="h-5 w-5" />
-                        <span className="font-medium font-open-sans">Quiz</span>
-                      </button>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </section>
       </main>

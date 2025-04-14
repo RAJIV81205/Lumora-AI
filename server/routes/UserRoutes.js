@@ -83,4 +83,28 @@ router.post("/materials/save",verifyToken, async (req,res) =>{
     }
 })
 
+router.post("/get/materials",verifyToken, async (req,res) =>{
+    try{
+        const user = await User.findById(req.user.id);
+        if(!user){
+            return res.status(400).json({message:"User not found"})
+        }
+        const materials = user.material.map((material) => {
+            return {
+                id: material._id,
+                subName: material.subName,
+                content: material.content,
+                summary: material.summary,
+                study_guide: material.study_guide,
+                addedAt:material.addedAt,
+            }
+        })
+        res.status(200).json(materials)
+    }catch(error){
+        console.error(error);
+        res.status(500).json({message:"Server error"})
+    }
+})
+    
+
 export default router;
