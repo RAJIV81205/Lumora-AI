@@ -119,9 +119,9 @@ const Dashboard = () => {
                                             <p className="text-sm font-open-sans text-gray-500 "> 
                                                 { countWords(mate.summary) + countWords(mate.study_guide) } words • Processed on <span className="text-gray-700 uppercase font-open-sans">{mate.addedAt}</span></p>
                                             <div className="flex items-center mt-2 text-sm">
-                                                <span className="text-amber-600 font-medium flex items-center font-open-sans">
-                                                    <Clock className="h-4 w-4 mr-1" />
-                                                    AI processing...
+                                                <span className="text-green-600 font-medium flex items-center font-open-sans">
+                                                    <CheckCircle className="h-4 w-4 mr-1" />
+                                                    Processed
                                                 </span>
                                             </div>
                                         </div>
