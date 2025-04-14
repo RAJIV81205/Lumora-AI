@@ -7,6 +7,7 @@ import Dashboard from './components/pages/Dashboard/Dashboard'
 import Chat from './components/pages/Dashboard/Chat'
 import Material from './components/pages/Dashboard/Material'
 
+
 // ScrollToTop component to reset scroll position on route changes
 function ScrollToTop() {
   const { pathname } = useLocation();
