@@ -12,9 +12,7 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('Processing your document...');
-  const [extractedText, setExtractedText] = useState('');
-  const [summary, setSummary] = useState('');
-  const [studyGuide, setStudyGuide] = useState('');
+  const [progress, setProgress] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
 
@@ -88,10 +86,7 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
 
     setIsLoading(true);
     setError('');
-    setExtractedText('');
-    setSummary('');
-    setStudyGuide('');
-    setLoadingMessage('Processing your document...');
+    setProgress(0);
 
     const formData = new FormData();
     formData.append('file', file);
@@ -99,6 +94,9 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
 
     try {
       // First, upload and extract text from PDF
+      setLoadingMessage('Uploading and extracting text from PDF...');
+      setProgress(10);
+      
       const uploadResponse = await fetch(`${url}/upload-pdf`, {
         method: 'POST',
         body: formData,
@@ -110,10 +108,9 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
         throw new Error(uploadData.error || 'Failed to upload file');
       }
 
-      setExtractedText(uploadData.text);
-      console.log('Extracted Text:', uploadData.text);
-
+      setProgress(30);
       setLoadingMessage('Summarizing your document...');
+      
       // Then, get the summary
       const summaryResponse = await fetch(`${url}/summarize`, {
         method: 'POST',
@@ -129,10 +126,9 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
         throw new Error(summaryData.error || 'Failed to generate summary');
       }
 
-      setSummary(summaryData.summary);
-      console.log('Summary:', summaryData.summary);
-
+      setProgress(60);
       setLoadingMessage('Generating study guide...');
+      
       // Generate study guide
       const studyGuideResponse = await fetch(`${url}/study-guide`, {
         method: 'POST',
@@ -148,10 +144,9 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
         throw new Error(studyGuideData.error || 'Failed to generate study guide');
       }
 
-      setStudyGuide(studyGuideData.study_guide);
-      console.log('Study Guide:', studyGuideData.study_guide);
-
+      setProgress(80);
       setLoadingMessage('Saving your materials...');
+      
       const saveData = await fetch(`${backendUrl}/materials/save`, {
         method: "POST",
         headers: {
@@ -170,14 +165,19 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
       if (!saveData.ok) {
         throw new Error(saveResponse.error || 'Failed to save materials');
       }
-      console.log('Materials saved successfully:', saveResponse);
-
-      setFile(null);
-      setSubject('');
+      
+      setProgress(100);
+      setLoadingMessage('Materials saved successfully!');
+      
+      // Close popup and refresh page after a short delay
+      setTimeout(() => {
+        onClose();
+        window.location.reload();
+      }, 1000);
+      
     } catch (error) {
       console.error('Error:', error);
       setError(error.message || 'An error occurred. Please try again.');
-    } finally {
       setIsLoading(false);
     }
   };
@@ -273,95 +273,14 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
 
         {isLoading && (
           <div className="mt-6 flex flex-col items-center justify-center">
-            <span
-              className="w-12 h-12 border-4 border-black border-b-transparent rounded-full inline-block box-border animate-spin"
-            ></span>
-            <p className="mt-2 text-gray-600">{loadingMessage}</p>
-          </div>
-        )}
-
-        {(extractedText || summary || studyGuide) && !isLoading && (
-          <div className="mt-6 space-y-4">
-            {extractedText && (
-              <div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">Extracted Text</h3>
-                <div className="bg-gray-50 p-4 rounded-lg max-h-60 overflow-y-auto">
-                  <p className="text-gray-700 whitespace-pre-wrap">{extractedText}</p>
-                </div>
-              </div>
-            )}
-
-            {summary && (
-              <div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">Summary</h3>
-                <div className="bg-gray-50 p-4 rounded-lg max-h-60 overflow-y-auto prose prose-sm max-w-none">
-                  <ReactMarkdown
-                    remarkPlugins={[remarkGfm, remarkMath]}
-                    rehypePlugins={[rehypeKatex]}
-                    components={{
-                      // Customize link rendering to open in new tab
-                      a: ({ node, ...props }) => (
-                        <a {...props} target="_blank" rel="noopener noreferrer" />
-                      ),
-                      // Ensure code blocks have proper styling
-                      code: ({ node, inline, className, children, ...props }) => {
-                        const match = /language-(\w+)/.exec(className || '');
-                        return !inline && match ? (
-                          <code className={`${className} block bg-gray-100 p-2 rounded`} {...props}>
-                            {children}
-                          </code>
-                        ) : (
-                          <code className={`${className} bg-gray-100 px-1 py-0.5 rounded`} {...props}>
-                            {children}
-                          </code>
-                        );
-                      },
-                      // Ensure math equations are properly rendered
-                      math: ({ value }) => <span className="math-inline">{value}</span>,
-                      inlineMath: ({ value }) => <span className="math-inline">{value}</span>,
-                    }}
-                  >
-                    {summary}
-                  </ReactMarkdown>
-                </div>
-              </div>
-            )}
-
-            {studyGuide && (
-              <div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">Study Guide</h3>
-                <div className="bg-gray-50 p-4 rounded-lg max-h-96 overflow-y-auto prose prose-sm max-w-none">
-                  <ReactMarkdown
-                    remarkPlugins={[remarkGfm, remarkMath]}
-                    rehypePlugins={[rehypeKatex]}
-                    components={{
-                      // Customize link rendering to open in new tab
-                      a: ({ node, ...props }) => (
-                        <a {...props} target="_blank" rel="noopener noreferrer" />
-                      ),
-                      // Ensure code blocks have proper styling
-                      code: ({ node, inline, className, children, ...props }) => {
-                        const match = /language-(\w+)/.exec(className || '');
-                        return !inline && match ? (
-                          <code className={`${className} block bg-gray-100 p-2 rounded`} {...props}>
-                            {children}
-                          </code>
-                        ) : (
-                          <code className={`${className} bg-gray-100 px-1 py-0.5 rounded`} {...props}>
-                            {children}
-                          </code>
-                        );
-                      },
-                      // Ensure math equations are properly rendered
-                      math: ({ value }) => <span className="math-inline">{value}</span>,
-                      inlineMath: ({ value }) => <span className="math-inline">{value}</span>,
-                    }}
-                  >
-                    {studyGuide}
-                  </ReactMarkdown>
-                </div>
-              </div>
-            )}
+            <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+              <div 
+                className="bg-green-600 h-2.5 rounded-full transition-all duration-500 ease-in-out" 
+                style={{ width: `${progress}%` }}
+              ></div>
+            </div>
+            <p className="mt-2 text-gray-900 font-nunito-sans animate-pulse">{loadingMessage}</p>
+            <p className="text-sm text-gray-500 font-open-sans">{progress}% complete</p>
           </div>
         )}
       </div>
