@@ -24,8 +24,21 @@ const Material = () => {
       { bg: 'bg-indigo-50', text: 'text-indigo-600' },
       { bg: 'bg-teal-50', text: 'text-teal-600' },
       { bg: 'bg-orange-50', text: 'text-orange-600' },
-      { bg: 'bg-cyan-50', text: 'text-cyan-600' }
+      { bg: 'bg-cyan-50', text: 'text-cyan-600' },
+      { bg: 'bg-red-50', text: 'text-red-600' },
+      { bg: 'bg-emerald-50', text: 'text-emerald-600' },
+      { bg: 'bg-lime-50', text: 'text-lime-600' },
+      { bg: 'bg-amber-50', text: 'text-amber-600' },
+      { bg: 'bg-yellow-50', text: 'text-yellow-600' },
+      { bg: 'bg-rose-50', text: 'text-rose-600' },
+      { bg: 'bg-fuchsia-50', text: 'text-fuchsia-600' },
+      { bg: 'bg-violet-50', text: 'text-violet-600' },
+      { bg: 'bg-sky-50', text: 'text-sky-600' },
+      { bg: 'bg-zinc-50', text: 'text-zinc-600' },
+      { bg: 'bg-neutral-50', text: 'text-neutral-600' },
+      { bg: 'bg-stone-50', text: 'text-stone-600' }
     ];
+    
     // Use the material id to consistently get the same color for the same document
     // If id is undefined, use a random index
     const index = id ? id % colors.length : Math.floor(Math.random() * colors.length);
