@@ -1,51 +1,84 @@
 import React, { useState } from 'react'
 import Sidebar from './Sidebar'
 import Navbar from './Navbar'
-import { FileText, MoreVertical, CheckCircle, Clock, ArrowRight, Upload } from 'lucide-react'
+import { FileText, MoreVertical, CheckCircle, Clock, ArrowRight, Upload, File, Image } from 'lucide-react'
 import UploadMaterialsPopup from './UploadMaterialsPopup'
 
 const Material = () => {
-  const [isUploadPopupOpen, setIsUploadPopupOpen] = useState(false);    
+  const [isUploadPopupOpen, setIsUploadPopupOpen] = useState(false);
 
-  // This would typically come from your backend/state management
-  const [materials] = useState([
+  const [materials, setMaterials] = useState([
     {
       id: 1,
-      title: "Advanced Physics Notes",
+      subName: "Advanced Physics Notes",
       type: "document",
-      pages: 16,
-      lastOpened: "2 days ago",
+      summary: "hello there",
+      study_guide: "this is a study guide",
+      addedAt:"2023-10-01",
       status: "processed",
       color: "blue"
     },
     {
       id: 2,
-      title: "World History Essay",
+      subName: "World History Essay",
       type: "document",
-      pages: 8,
-      lastOpened: "yesterday",
+      summary: "hello there",
+      study_guide: "this is a study guide",
+      addedAt:"2023-10-01",
       status: "processing",
       color: "green"
     },
     {
       id: 3,
-      title: "Biology Diagrams",
+      subName: "Biology Diagrams",
       type: "image",
-      pages: 12,
-      lastOpened: "3 days ago",
+      summary: "hello there",
+      study_guide: "this is a study guide",
+      addedAt:"2023-10-01",
       status: "processed",
       color: "purple"
     }
   ]);
 
+  const url = import.meta.env.VITE_BACKEND_URL
+  const token = localStorage.getItem('token')
+
+  const getMaterials = async () => {
+    const response = await fetch(`${url}/get/materials`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `${token}`
+      }
+    })
+    const data = await response.json()
+    if (response.ok) {
+      setMaterials(data)
+    }
+  }
+
+  const getStatusColor = (status) => {
+    return status === 'processed' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800';
+  }
+
+  const getTypeIcon = (type) => {
+    return type === 'document' ? <File className="h-5 w-5" /> : <Image className="h-5 w-5" />;
+  }
+
+  function countWords(text) {
+    if (!text) return 0; // Return 0 if text is empty or null
+    const words = text.trim().split(/\s+/);
+    return words.length;
+  }
+
   return (
     <div className="font-sans bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-md p-6 w-full">
-        <UploadMaterialsPopup
-            isOpen={isUploadPopupOpen}
-            onClose={() => setIsUploadPopupOpen(false)}
-        />
+      <UploadMaterialsPopup
+        isOpen={isUploadPopupOpen}
+        onClose={() => setIsUploadPopupOpen(false)}
+      />
       <Navbar />
-      
+
       <main className="grid grid-cols-12 gap-6">
         <Sidebar />
 
@@ -57,39 +90,63 @@ const Material = () => {
                 <p className="text-gray-500">Manage and view your uploaded study materials</p>
               </div>
               <div className="flex items-center space-x-4">
-                <button className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium flex items-center space-x-2 hover:bg-blue-700 transition-all duration-300" onClick={() => setIsUploadPopupOpen(true)}>
+                <button
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium flex items-center space-x-2 hover:bg-blue-700 transition-all duration-300"
+                  onClick={() => setIsUploadPopupOpen(true)}
+                >
                   <Upload className="h-5 w-5" />
                   <span>Upload New</span>
                 </button>
               </div>
             </div>
-            
-            <div className="space-y-4">
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {materials.map((material) => (
-                <div 
-                  key={material.id} 
-                  className="flex items-start gap-4 p-4 rounded-lg hover:bg-gray-50 transition-all duration-300 border border-gray-100 hover:border-blue-200 group"
+                <div
+                  key={material.id}
+                  className="bg-white rounded-xl border border-gray-200 hover:border-gray-900 transition-all duration-300 overflow-hidden group hover:shadow-lg"
                 >
-                  <div className={`p-3 bg-${material.color}-50 rounded-lg text-${material.color}-600 group-hover:scale-110 transition-transform duration-300`}>
-                    <FileText className="h-5 w-5" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-medium text-gray-800 mb-1">{material.title}</h3>
-                    <p className="text-sm text-gray-500 mb-2">{material.pages} pages • Last opened {material.lastOpened}</p>
-                    <div className="flex items-center text-sm">
-                      <span className={`text-${material.status === 'processed' ? 'green' : 'amber'}-600 font-medium flex items-center`}>
-                        {material.status === 'processed' ? (
-                          <CheckCircle className="h-4 w-4 mr-1" />
-                        ) : (
-                          <Clock className="h-4 w-4 mr-1" />
-                        )}
-                        {material.status === 'processed' ? 'AI summary available' : 'AI processing...'}
-                      </span>
+                  <div className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className={`p-3 rounded-lg ${material.color === 'blue' ? 'bg-blue-50 text-blue-600' : material.color === 'green' ? 'bg-green-50 text-green-600' : 'bg-purple-50 text-purple-600'}`}>
+                        {getTypeIcon(material.type)}
+                      </div>
+                      <button className="p-2 rounded-full hover:bg-gray-100 transition-all duration-300 opacity-0 group-hover:opacity-100">
+                        <MoreVertical className="h-5 w-5 text-gray-500" />
+                      </button>
+                    </div>
+
+                    <h3 className="font-semibold text-lg text-gray-900 mb-2 line-clamp-1 font-open-sans">{material.subName}</h3>
+
+                    <div className="space-y-3">
+                      <div className="flex items-center text-sm text-gray-500">
+                        <FileText className="h-4 w-4 mr-2" />
+                        <span className='font-nunito-sans'>{ countWords(material.summary) + countWords(material.study_guide) } words</span>
+                      </div>
+
+                      <div className="flex items-center text-sm text-gray-500">
+                        <Clock className="h-4 w-4 mr-2" />
+                        <span className='font-nunito-sans'>Processed on <span className='text-gray-800'>{material.addedAt}</span></span>
+                      </div>
+
+
+                    </div>
+
+                    <div className="mt-4 space-y-2">
+                      <button className="w-full flex items-center justify-center space-x-2 p-3 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 transition-all duration-300 border-2 border-solid border-blue-50 hover:border-blue-400">
+                        <FileText className="h-5 w-5" />
+                        <span className="font-medium font-open-sans">Summary</span>
+                      </button>
+                      <button className="w-full flex items-center justify-center space-x-2 p-3 rounded-lg bg-green-50 hover:bg-green-100 text-green-700 transition-all duration-300 border-2 border-solid border-green-50 hover:border-green-500">
+                        <File className="h-5 w-5" />
+                        <span className="font-medium font-open-sans">Study Guide</span>
+                      </button>
+                      <button className="w-full flex items-center justify-center space-x-2 p-3 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-700 transition-all duration-300 border-2 border-solid border-purple-50 hover:border-purple-400">
+                        <CheckCircle className="h-5 w-5" />
+                        <span className="font-medium font-open-sans">Quiz</span>
+                      </button>
                     </div>
                   </div>
-                  <button className="p-2 rounded-full hover:bg-gray-200 transition-all duration-300 opacity-0 group-hover:opacity-100">
-                    <MoreVertical className="h-5 w-5 text-gray-500" />
-                  </button>
                 </div>
               ))}
             </div>

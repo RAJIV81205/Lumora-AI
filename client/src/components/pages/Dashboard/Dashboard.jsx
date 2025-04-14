@@ -58,6 +58,12 @@ const Dashboard = () => {
         }
     }, [navigate, url]);
 
+    function countWords(text) {
+        if (!text) return 0; // Return 0 if text is empty or null
+        const words = text.trim().split(/\s+/);
+        return words.length;
+    }
+
     if (isLoading) {
         return <div className="min-h-screen w-full flex justify-center items-center"><span className="loader"></span></div>;
     }
@@ -109,10 +115,11 @@ const Dashboard = () => {
                                             <FileText className="h-5 w-5" />
                                         </div>
                                         <div className="flex-1">
-                                            <h3 className="font-medium capitalize">{mate.subName}</h3>
-                                            <p className="text-sm text-gray-500">Uploaded on {mate.addedAt}</p>
+                                            <h3 className="font-medium capitalize font-open-sans text-shadow-gray-900">{mate.subName}</h3>
+                                            <p className="text-sm font-open-sans text-gray-500 "> 
+                                                { countWords(mate.summary) + countWords(mate.study_guide) } words • Processed on <span className="text-gray-700 uppercase font-open-sans">{mate.addedAt}</span></p>
                                             <div className="flex items-center mt-2 text-sm">
-                                                <span className="text-amber-600 font-medium flex items-center">
+                                                <span className="text-amber-600 font-medium flex items-center font-open-sans">
                                                     <Clock className="h-4 w-4 mr-1" />
                                                     AI processing...
                                                 </span>
