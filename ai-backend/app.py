@@ -116,10 +116,17 @@ def upload_pdf():
         try:
             with pdfplumber.open(file_path) as pdf:
                 text = ''.join([page.extract_text() or '' for page in pdf.pages])
+            # Delete the file after processing
+            os.remove(file_path)
             return jsonify({'text': text}), 200
         except Exception as e:
+            # Make sure to delete the file even if processing fails
+            if os.path.exists(file_path):
+                os.remove(file_path)
             return jsonify({'error': f'PDF processing failed: {str(e)}'}), 500
     else:
+        # Delete the file if it's not a PDF
+        os.remove(file_path)
         return jsonify({'error': 'Only PDFs are supported'}), 400
 
 @app.route('/summarize', methods=['POST'])
