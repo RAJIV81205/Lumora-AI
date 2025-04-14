@@ -274,7 +274,7 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
         {isLoading && (
           <div className="mt-6 flex flex-col items-center justify-center">
             <span
-              className="w-12 h-12 border-4 border-white border-b-transparent rounded-full inline-block box-border animate-spin"
+              className="w-12 h-12 border-4 border-black border-b-transparent rounded-full inline-block box-border animate-spin"
             ></span>
             <p className="mt-2 text-gray-600">{loadingMessage}</p>
           </div>
@@ -316,6 +316,9 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
                           </code>
                         );
                       },
+                      // Ensure math equations are properly rendered
+                      math: ({ value }) => <span className="math-inline">{value}</span>,
+                      inlineMath: ({ value }) => <span className="math-inline">{value}</span>,
                     }}
                   >
                     {summary}
@@ -349,6 +352,9 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
                           </code>
                         );
                       },
+                      // Ensure math equations are properly rendered
+                      math: ({ value }) => <span className="math-inline">{value}</span>,
+                      inlineMath: ({ value }) => <span className="math-inline">{value}</span>,
                     }}
                   >
                     {studyGuide}

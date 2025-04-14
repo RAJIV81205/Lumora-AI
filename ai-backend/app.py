@@ -32,7 +32,11 @@ def summarize_text(text):
     7. Include examples when helpful
     8. You can add any data or statistics that are relevant to the topic
     9. Avoid unnecessary jargon and overly complex sentences
-    10. Use Markdown formatting for better readability"""
+    10. Use Markdown formatting for better readability
+    11. Format all mathematical equations using KaTeX syntax:
+        - For inline math, use single dollar signs: $E = mc^2$
+        - For display math, use double dollar signs: $$F = ma$$
+        - Always use proper LaTeX syntax for all mathematical expressions"""
     
     user_prompt = f"Please summarize the following study material:\n\n{text}."
     
@@ -71,7 +75,11 @@ def generate_study_guide(text):
     12. Include a section on common misconceptions and how to avoid them
     13. Provide tips for effective study and retention
     14. Include a glossary of key terms
-    15. Add a section on how this topic connects to other related topics"""
+    15. Add a section on how this topic connects to other related topics
+    16. Format all mathematical equations using KaTeX syntax:
+        - For inline math, use single dollar signs: $E = mc^2$
+        - For display math, use double dollar signs: $$F = ma$$
+        - Always use proper LaTeX syntax for all mathematical expressions"""
     
     user_prompt = f"Please create a comprehensive study guide for the following material:\n\n{text}."
     

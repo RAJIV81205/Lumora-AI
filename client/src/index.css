@@ -54,3 +54,29 @@
     100% { transform: rotate(360deg)}
   }
         
+/* Math equation styling */
+.math-inline {
+  display: inline-block;
+  margin: 0 0.2em;
+}
+
+/* Ensure KaTeX styles are properly applied */
+.katex {
+  font-size: 1.1em;
+  line-height: 1.2;
+}
+
+.katex-display {
+  margin: 1em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.5em 0;
+}
+
+/* Ensure math equations don't overflow on mobile */
+@media (max-width: 768px) {
+  .katex-display {
+    font-size: 0.9em;
+  }
+}
+        
