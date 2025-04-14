@@ -4,6 +4,7 @@ import pdfplumber
 import os
 from openai import OpenAI
 from config import OPENAI_API_KEY
+import json
 
 base_url = "https://api.aimlapi.com/v1"
 api_key = OPENAI_API_KEY
@@ -57,32 +58,45 @@ def summarize_text(text):
         return f"Error generating summary: {str(e)}"
 
 def generate_study_guide(text):
-    system_prompt = """You are an expert educational assistant specializing in creating comprehensive study guides for academic materials. 
-    Your goal is to help students master complex topics by providing detailed explanations, examples, and practice opportunities.
+    system_prompt = """You are an expert educational assistant specializing in creating comprehensive and detailed study guides for academic materials. 
+    Your goal is to help students master complex topics by providing structured, detailed, and visually appealing study guides.
+
+    Format your response exactly as follows:
     
-    When creating a study guide:
-    1. Provide a thorough overview of the entire chapter or topic
-    2. Break down complex concepts into understandable components
-    3. Include detailed explanations for all important concepts
-    4. Define all technical terms and jargon
-    5. Provide multiple examples to illustrate key points
-    6. Include diagrams or visual explanations where appropriate (in text form)
-    7. Create practice questions or problems to test understanding
-    8. Highlight connections between different concepts
-    9. Include memory aids or mnemonics for difficult concepts
-    10. Organize content in a logical, hierarchical structure
-    11. Use Markdown formatting for better readability
-    12. Include a section on common misconceptions and how to avoid them
-    13. Provide tips for effective study and retention
-    14. Include a glossary of key terms
-    15. Add a section on how this topic connects to other related topics
-    16. Format all mathematical equations using KaTeX syntax:
-        - For inline math, use single dollar signs: $E = mc^2$
-        - For display math, use double dollar signs: $$F = ma$$
-        - Always use proper LaTeX syntax for all mathematical expressions"""
+    # TITLE: [Insert descriptive title]
     
-    user_prompt = f"Please create a comprehensive study guide for the following material:\n\n{text}."
+    ## OVERVIEW: [Insert a brief overview paragraph about the topic]
     
+    ## [Section 1 Title]
+    [Section 1 Content with explanations, definitions, examples, etc.]
+    
+    ## [Section 2 Title]
+    [Section 2 Content with explanations, definitions, examples, etc.]
+    
+    ## [Continue with additional sections...]
+    
+    ## Key Terms
+    - **[Term 1]**: [Definition]
+    - **[Term 2]**: [Definition]
+    - [And so on...]
+    
+    ## Tips for Studying This Topic
+    - [Tip 1]
+    - [Tip 2]
+    - [And so on...]
+    
+    When creating this study guide:
+    1. Use clear section titles that highlight main concepts
+    2. Provide detailed explanations with examples in each section
+    3. Format all mathematical equations using KaTeX syntax:
+       - For inline math, use single dollar signs: $E = mc^2$
+       - For display math, use double dollar signs: $$F = ma$$
+    4. Use Markdown for formatting: headers (##), bullet points, bold (**text**), etc.
+    5. Include helpful diagrams described in text if relevant
+    6. Make sure each section has enough detail to be useful but remains clear and concise"""
+
+    user_prompt = f"Please create a comprehensive and detailed study guide for the following material:\n\n{text}."
+
     try:
         completion = api.chat.completions.create(
             model="gpt-4o-mini",
@@ -91,10 +105,13 @@ def generate_study_guide(text):
                 {"role": "user", "content": user_prompt},
             ],
             temperature=0.5,
-            max_tokens=2000,
+            max_tokens=3000,  # Increased token limit for more detailed responses
         )
-        
+
         study_guide = completion.choices[0].message.content
+
+        # Return the study guide content directly as a string
+        # This is what your frontend expects based on your React component
         return study_guide
     except Exception as e:
         return f"Error generating study guide: {str(e)}"
@@ -149,7 +166,8 @@ def study_guide():
     text = data['text']
     study_guide = generate_study_guide(text)
     
+    # Return the study guide as a string
     return jsonify({'study_guide': study_guide}), 200
 
 if __name__ == '__main__':
-    app.run(debug=True) 
+    app.run(debug=True)

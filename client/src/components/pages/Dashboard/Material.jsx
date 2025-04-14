@@ -4,6 +4,7 @@ import Navbar from './Navbar'
 import { FileText, MoreVertical, CheckCircle, Clock, ArrowRight, Upload, File, Image, Loader2, X } from 'lucide-react'
 import UploadMaterialsPopup from './UploadMaterialsPopup'
 import Summary from './Summary'
+import StudyGuide from './StudyGuide'
 
 const Material = () => {
   const [isUploadPopupOpen, setIsUploadPopupOpen] = useState(false);
@@ -11,6 +12,7 @@ const Material = () => {
   const [error, setError] = useState(null);
   const [selectedMaterial, setSelectedMaterial] = useState(null);
   const [showSummary, setShowSummary] = useState(false);
+  const [showStudyGuide, setShowStudyGuide] = useState(false);
 
   const [materials, setMaterials] = useState([]);
 
@@ -138,10 +140,18 @@ const Material = () => {
   const handleSummaryClick = (material) => {
     setSelectedMaterial(material);
     setShowSummary(true);
+    setShowStudyGuide(false);
   };
 
-  const handleCloseSummary = () => {
+  const handleStudyGuideClick = (material) => {
+    setSelectedMaterial(material);
+    setShowStudyGuide(true);
     setShowSummary(false);
+  };
+
+  const handleClose = () => {
+    setShowSummary(false);
+    setShowStudyGuide(false);
     setSelectedMaterial(null);
   };
 
@@ -175,16 +185,20 @@ const Material = () => {
       />
       <Navbar />
 
-      {showSummary ? (
+      {(showSummary || showStudyGuide) ? (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-hidden">
           <div className="bg-white rounded-xl w-full max-w-4xl h-[90vh] flex flex-col relative">
             <button
-              onClick={handleCloseSummary}
-              className="absolute top-4 right-4 p-2 rounded-full  transition-colors z-10"
+              onClick={handleClose}
+              className="absolute top-4 right-4 p-2 rounded-full transition-colors z-10"
             >
               <X className="h-8 w-8 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-3xl transition-all duration-300" />
             </button>
-            <Summary material={selectedMaterial} onClose={handleCloseSummary} />
+            {showSummary ? (
+              <Summary material={selectedMaterial} onClose={handleClose} />
+            ) : (
+              <StudyGuide material={selectedMaterial} />
+            )}
           </div>
         </div>
       ) : (
@@ -265,7 +279,10 @@ const Material = () => {
                             <FileText className="h-5 w-5" />
                             <span className="font-medium font-open-sans">Summary</span>
                           </button>
-                          <button className="w-full flex items-center justify-center space-x-2 p-3 rounded-lg bg-green-50 hover:bg-green-100 text-green-700 transition-all duration-300 border-2 border-solid border-green-50 hover:border-green-500">
+                          <button 
+                            onClick={() => handleStudyGuideClick(material)}
+                            className="w-full flex items-center justify-center space-x-2 p-3 rounded-lg bg-green-50 hover:bg-green-100 text-green-700 transition-all duration-300 border-2 border-solid border-green-50 hover:border-green-500"
+                          >
                             <File className="h-5 w-5" />
                             <span className="font-medium font-open-sans">Study Guide</span>
                           </button>
