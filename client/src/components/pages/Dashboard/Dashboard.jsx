@@ -101,7 +101,7 @@ const Dashboard = () => {
 
                     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                         <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-lg font-semibold">Recent Materials</h2>
+                            <h2 className="text-lg font-semibold font-open-sans">Recent Materials</h2>
                             <Link to="/dashboard/materials" className="text-blue-600 flex items-center hover:underline">
                                 <span>View all</span>
                                 <ArrowRight className="h-4 w-4 ml-1" />
@@ -109,7 +109,9 @@ const Dashboard = () => {
                         </div>
                         <div className="space-y-4">
                             {user?.material?.length != 0 && (
-                                user?.material?.map((mate, index) => (
+                                [...user.material]
+                                    .sort((a, b) => b.addedAt.localeCompare(a.addedAt))
+                                    .map((mate, index) => (
                                     <div key={index} className="flex items-start gap-4 p-4 rounded-lg hover:bg-gray-50 transition-all duration-300 border border-gray-100 hover:border-blue-200">
                                         <div className="p-3 bg-blue-50 rounded-lg text-blue-600">
                                             <FileText className="h-5 w-5" />
