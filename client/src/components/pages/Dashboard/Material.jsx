@@ -14,6 +14,24 @@ const Material = () => {
   const url = import.meta.env.VITE_BACKEND_URL
   const token = localStorage.getItem('token')
 
+  // Function to generate a random color combination
+  const getRandomColor = (id) => {
+    const colors = [
+      { bg: 'bg-blue-50', text: 'text-blue-600' },
+      { bg: 'bg-green-50', text: 'text-green-600' },
+      { bg: 'bg-purple-50', text: 'text-purple-600' },
+      { bg: 'bg-pink-50', text: 'text-pink-600' },
+      { bg: 'bg-indigo-50', text: 'text-indigo-600' },
+      { bg: 'bg-teal-50', text: 'text-teal-600' },
+      { bg: 'bg-orange-50', text: 'text-orange-600' },
+      { bg: 'bg-cyan-50', text: 'text-cyan-600' }
+    ];
+    // Use the material id to consistently get the same color for the same document
+    // If id is undefined, use a random index
+    const index = id ? id % colors.length : Math.floor(Math.random() * colors.length);
+    return colors[index];
+  }
+
   useEffect(() => {
     getMaterials();
   }, []);
@@ -170,19 +188,19 @@ const Material = () => {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {materials.map((material) => (
+                {materials.map((material, index) => (
                   <div
-                    key={material.id}
+                    key={material.id || index}
                     className="bg-white rounded-xl border border-gray-200 hover:border-gray-900 transition-all duration-300 overflow-hidden group hover:shadow-lg"
                   >
                     <div className="p-6">
                       <div className="flex items-start justify-between mb-4">
-                        <div className={`p-3 rounded-lg ${material.color === 'blue' ? 'bg-blue-50 text-blue-600' : material.color === 'green' ? 'bg-green-50 text-green-600' : 'bg-purple-50 text-purple-600'}`}>
+                        <div className={`p-3 rounded-lg ${getRandomColor(index).bg} ${getRandomColor(index).text}`}>
                           {getTypeIcon(material.type)}
                         </div>
                         <div className="flex items-center space-x-2">
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(material.status)}`}>
-                            {material.status || 'Unknown'}
+                          <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            Processed
                           </span>
                           <button className="p-2 rounded-full hover:bg-gray-100 transition-all duration-300 opacity-0 group-hover:opacity-100">
                             <MoreVertical className="h-5 w-5 text-gray-500" />
