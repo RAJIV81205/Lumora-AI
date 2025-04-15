@@ -65,53 +65,83 @@ def generate_study_guide(text):
     
     # TITLE: [Insert descriptive title]
     
-    ## OVERVIEW: [Insert a brief overview paragraph about the topic]
+    ## OVERVIEW: [Insert a comprehensive overview paragraph about the topic (2-3 paragraphs)]
     
     ## [Section 1 Title]
-    [Section 1 Content with explanations, definitions, examples, etc.]
+    [Section 1 Content with detailed explanations, precise definitions, multiple examples, and applications]
     
     ## [Section 2 Title]
-    [Section 2 Content with explanations, definitions, examples, etc.]
+    [Section 2 Content with detailed explanations, precise definitions, multiple examples, and applications]
     
     ## [Continue with additional sections...]
     
     ## Key Terms
-    - **[Term 1]**: [Definition]
-    - **[Term 2]**: [Definition]
-    - [And so on...]
+    - **[Term 1]**: [Comprehensive definition with examples]
+    - **[Term 2]**: [Comprehensive definition with examples]
+    - [Include ALL important terminology from the text]
+    
+    ## Formulas and Equations
+    - **[Formula 1 Name]**: $[Formula]$ - [Explanation of variables and application]
+    - **[Formula 2 Name]**: $[Formula]$ - [Explanation of variables and application]
+    - [Include ALL relevant formulas from the text]
+    
+    ## Key Concepts to Remember
+    - [Concept 1 with explanation]
+    - [Concept 2 with explanation]
+    - [Include at least 5-8 key concepts]
+    
+    ## Common Misconceptions
+    - **Misconception 1**: [Explanation of why it's wrong and the correct understanding]
+    - **Misconception 2**: [Explanation of why it's wrong and the correct understanding]
+    - [Include at least 3-5 common misconceptions when relevant]
+    
+    ## Practice Problems
+    1. [Problem 1 with step-by-step solution]
+    2. [Problem 2 with step-by-step solution]
+    3. [Include at least 3-5 practice problems with detailed solutions]
     
     ## Tips for Studying This Topic
-    - [Tip 1]
-    - [Tip 2]
-    - [And so on...]
+    - [Detailed study tip 1]
+    - [Detailed study tip 2]
+    - [Include at least 5-7 specific study techniques]
+    
+    ## Connections to Other Topics
+    - [Connection 1: How this topic relates to another important concept]
+    - [Connection 2: How this topic relates to another important concept]
+    - [Include at least 3-5 important connections]
     
     When creating this study guide:
     1. Use clear section titles that highlight main concepts
-    2. Provide detailed explanations with examples in each section
+    2. Provide exceptionally detailed explanations with multiple concrete examples in each section
     3. Format all mathematical equations using KaTeX syntax:
        - For inline math, use single dollar signs: $E = mc^2$
        - For display math, use double dollar signs: $$F = ma$$
     4. Use Markdown for formatting: headers (##), bullet points, bold (**text**), etc.
-    5. Include helpful diagrams described in text if relevant
-    6. Make sure each section has enough detail to be useful but remains clear and concise"""
+    5. Include helpful visualizations described in text format where relevant
+    6. Make sure each section has sufficient detail to be comprehensive and useful
+    7. Never skip ANY important details from the original text
+    8. Always include real-world applications and concrete examples
+    9. Ensure all technical terms are defined thoroughly
+    10. Include historical context and development of concepts when relevant
+    11. Add necessary details that support understanding even if not explicitly mentioned in the source text"""
 
-    user_prompt = f"Please create a comprehensive and detailed study guide for the following material:\n\n{text}."
+    user_prompt = f"Please create a comprehensive and detailed study guide for the following material. Make sure to include EVERY important detail, concept, formula, and explanation from the text. Be exceptionally thorough and leave nothing important out:\n\n{text}."
 
     try:
         completion = api.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-4o-mini",  # Consider using a more powerful model if available
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
             ],
-            temperature=0.5,
-            max_tokens=3000,  # Increased token limit for more detailed responses
+            temperature=0.3,  # Lower temperature for more detailed and comprehensive output
+            max_tokens=4000,  # Increased token limit for much more detailed responses
         )
 
         study_guide = completion.choices[0].message.content
 
         # Return the study guide content directly as a string
-        # This is what your frontend expects based on your React component
+        # This matches what your frontend expects based on your React component
         return study_guide
     except Exception as e:
         return f"Error generating study guide: {str(e)}"
