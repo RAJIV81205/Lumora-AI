@@ -232,7 +232,7 @@ const Material = () => {
     }
 
     return (
-      <div className="font-sans bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-md p-6 w-full">
+      <div className="font-sans bg-gradient-to-r from-green-50 to-green-100 rounded-xl shadow-md p-6 w-full">
         <UploadMaterialsPopup
           isOpen={isUploadPopupOpen}
           onClose={() => setIsUploadPopupOpen(false)}
@@ -260,8 +260,8 @@ const Material = () => {
           <main className="grid grid-cols-12 gap-6">
             <Sidebar />
 
-            <section className="col-span-10 space-y-6">
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <section className="col-span-10 space-y-6 ">
+              <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-800">
                 <div className="flex justify-between items-center mb-6 w-full">
                   <div>
                     <h2 className="text-2xl font-bold text-gray-900 mb-2 font-open-sans">My Materials</h2>
