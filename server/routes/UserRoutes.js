@@ -105,6 +105,25 @@ router.post("/get/materials",verifyToken, async (req,res) =>{
         res.status(500).json({message:"Server error"})
     }
 })
+
+router.post("/delete/material",verifyToken, async (req,res) =>{
+    const {materialId} = req.body;
+    if(!materialId){
+        return res.status(400).json({message:"Please fill all the fields"})
+    }
+    try{
+        const user = await User.findById(req.user.id);
+        if(!user){
+            return res.status(400).json({message:"User not found"})
+        }
+        user.material = user.material.filter((material) => material._id.toString() !== materialId);
+        await user.save();
+        res.status(200).json({message:"Material deleted successfully"})
     
+    }catch(err){
+        console.error(err);
+        res.status(500).json({message:"Server error"})
+    }
+})
 
 export default router;
