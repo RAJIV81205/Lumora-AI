@@ -186,7 +186,7 @@ const Material = () => {
       <Navbar />
 
       {(showSummary || showStudyGuide) ? (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-hidden">
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 overflow-hidden">
           <div className="bg-white rounded-xl w-full max-w-4xl h-[90vh] flex flex-col relative">
             <button
               onClick={handleClose}
