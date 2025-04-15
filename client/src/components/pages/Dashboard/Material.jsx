@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Sidebar from './Sidebar'
 import Navbar from './Navbar'
 import { FileText, MoreVertical, CheckCircle, Clock, ArrowRight, Upload, File, Image, Loader2, X } from 'lucide-react'
@@ -13,8 +13,11 @@ const Material = () => {
   const [selectedMaterial, setSelectedMaterial] = useState(null);
   const [showSummary, setShowSummary] = useState(false);
   const [showStudyGuide, setShowStudyGuide] = useState(false);
+  // Track which material's menu is open by its ID
+  const [openMenuId, setOpenMenuId] = useState(null);
 
   const [materials, setMaterials] = useState([]);
+  const menuRef = useRef(null);
 
   const url = import.meta.env.VITE_BACKEND_URL
   const token = localStorage.getItem('token')
@@ -43,12 +46,26 @@ const Material = () => {
       { bg: 'bg-neutral-50', text: 'text-neutral-600' },
       { bg: 'bg-stone-50', text: 'text-stone-600' }
     ];
-    
+
     // Use the material id to consistently get the same color for the same document
     // If id is undefined, use a random index
     const index = id ? id % colors.length : Math.floor(Math.random() * colors.length);
     return colors[index];
   }
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setOpenMenuId(null);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menuRef]);
 
   useEffect(() => {
     getMaterials();
@@ -65,11 +82,11 @@ const Material = () => {
           'Authorization': `${token}`
         }
       });
-      
+
       if (!response.ok) {
         throw new Error('Failed to fetch materials');
       }
-      
+
       const data = await response.json();
       setMaterials(data);
     } catch (err) {
@@ -117,11 +134,11 @@ const Material = () => {
       const [day, month, year] = datePart.split('/');
       const [time, period] = timePart.split(' ');
       const [hours, minutes] = time.split(':');
-      
+
       // Create a new Date object
       const date = new Date(year, month - 1, day);
       date.setHours(parseInt(hours) + (period.toLowerCase() === 'pm' ? 12 : 0), parseInt(minutes));
-      
+
       // Format the date
       return date.toLocaleDateString('en-US', {
         year: 'numeric',
@@ -155,6 +172,22 @@ const Material = () => {
     setSelectedMaterial(null);
   };
 
+  const toggleOptionsMenu = (materialId, event) => {
+    // Prevent event bubbling
+    event.stopPropagation();
+    setOpenMenuId(openMenuId === materialId ? null : materialId);
+  };
+
+  const handleChangeName = (material) => {
+    // Implement the logic to change the name of the material
+    setOpenMenuId(null); // Close the menu after action
+  };
+
+  const handleDelete = (materialId) => {
+    // Implement the logic to delete the material
+    setOpenMenuId(null); // Close the menu after action
+  };
+
   if (isLoading) {
     return <div className="min-h-screen w-full flex justify-center items-center"><span className="loader"></span></div>;
   }
@@ -165,7 +198,7 @@ const Material = () => {
         <div className="text-red-600 text-center">
           <p className="text-lg font-semibold font-open-sans">Error loading materials</p>
           <p className="text-sm font-open-sans">{error}</p>
-          <button 
+          <button
             onClick={getMaterials}
             className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
@@ -251,9 +284,48 @@ const Material = () => {
                             <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                               Processed
                             </span>
-                            <button className="p-2 rounded-full hover:bg-gray-100 transition-all duration-300 opacity-0 group-hover:opacity-100">
-                              <MoreVertical className="h-5 w-5 text-gray-500" />
-                            </button>
+                            <div className="relative">
+                              <button
+                                className="p-2 rounded-full hover:bg-gray-100 transition-all duration-300 opacity-0 group-hover:opacity-100"
+                                onClick={(e) => toggleOptionsMenu(material.id || index, e)}
+                              >
+                                <MoreVertical className="h-5 w-5 text-gray-500" />
+                              </button>
+                              
+                              {openMenuId === (material.id || index) && (
+                                <div
+                                  ref={menuRef}
+                                  className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-xl z-20 overflow-hidden transition-all duration-200 ease-in-out font-open-sans"
+                                  style={{
+                                    animation: "fadeIn 0.2s ease-out"
+                                  }}
+                                >
+                                  <div className="py-1">
+                                    <button
+                                      className="flex items-center w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                                      onClick={() => handleChangeName(material)}
+                                    >
+                                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                      </svg>
+                                      Change Name
+                                    </button>
+
+                                    <div className="border-t border-gray-100 my-1"></div>
+
+                                    <button
+                                      className="flex items-center w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
+                                      onClick={() => handleDelete(material.id)}
+                                    >
+                                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                      </svg>
+                                      Delete
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
 
@@ -262,7 +334,7 @@ const Material = () => {
                         <div className="space-y-3">
                           <div className="flex items-center text-sm text-gray-500">
                             <FileText className="h-4 w-4 mr-2" />
-                            <span className='font-nunito-sans'>{ countWords(material.summary) + countWords(material.study_guide) } words</span>
+                            <span className='font-nunito-sans'>{countWords(material.summary) + countWords(material.study_guide)} words</span>
                           </div>
 
                           <div className="flex items-center text-sm text-gray-500">
@@ -272,14 +344,14 @@ const Material = () => {
                         </div>
 
                         <div className="mt-4 space-y-2">
-                          <button 
+                          <button
                             onClick={() => handleSummaryClick(material)}
                             className="w-full flex items-center justify-center space-x-2 p-3 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 transition-all duration-300 border-2 border-solid border-blue-50 hover:border-blue-400"
                           >
                             <FileText className="h-5 w-5" />
                             <span className="font-medium font-open-sans">Summary</span>
                           </button>
-                          <button 
+                          <button
                             onClick={() => handleStudyGuideClick(material)}
                             className="w-full flex items-center justify-center space-x-2 p-3 rounded-lg bg-green-50 hover:bg-green-100 text-green-700 transition-all duration-300 border-2 border-solid border-green-50 hover:border-green-500"
                           >
