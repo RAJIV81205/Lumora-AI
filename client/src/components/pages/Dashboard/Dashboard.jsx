@@ -35,7 +35,6 @@ const Dashboard = () => {
             const data = await response.json();
             if (response.ok) {
                 setUser(data.user);
-                console.log(data.user)
             } else {
                 localStorage.removeItem('token');
                 navigate('/login');
