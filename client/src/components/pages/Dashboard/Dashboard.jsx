@@ -69,7 +69,7 @@ const Dashboard = () => {
     }
 
     return (
-        <div className="font-sans bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-md p-6 w-full">
+        <div className="font-sans bg-gradient-to-b from-green-50 to-green-100   rounded-xl shadow-md p-6 w-full">
 
             <Navbar />
 
@@ -83,10 +83,10 @@ const Dashboard = () => {
                 <Sidebar />
 
 
-                <section className="col-span-7 space-y-6">
-                    <div className="bg-gradient-to-r from-green-600 to-green-400 text-white rounded-xl p-6 relative overflow-hidden group">
+                <section className="col-span-7 space-y-6 ">
+                    <div className="bg-gradient-to-r from-green-600 to-green-400 text-white rounded-xl p-6 relative overflow-hidden group border-2 border-green-800 font-open-sans">
                         <h2 className="text-2xl font-bold mb-3">Welcome back, {user?.username || 'User'}!</h2>
-                        <p className="text-green-100 mb-6 max-w-md">Continue your learning journey with AI-powered assistance. Upload new materials or continue from where you left off.</p>
+                        <p className="text-green-100 mb-6 max-w-xl">Continue your learning journey with AI-powered assistance. Upload new materials or continue from where you left off.</p>
                         <div className="flex space-x-4">
                             <button className="bg-white text-gray-700 px-4 py-2 rounded-lg font-medium flex items-center space-x-2 hover:shadow-lg transition-all duration-300" onClick={() => setIsUploadPopupOpen(true)}>
                                 <Upload className="h-5 w-5" />
@@ -99,7 +99,7 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                    <div className="bg-white rounded-xl shadow-sm p-6 border-2 border-green-800">
                         <div className="flex justify-between items-center mb-6">
                             <h2 className="text-lg font-semibold font-open-sans">Recent Materials</h2>
                             <Link to="/dashboard/materials" className="text-blue-600 flex items-center hover:underline">
@@ -151,7 +151,7 @@ const Dashboard = () => {
                 </section >
 
                 <aside className="col-span-3 space-y-6">
-                    <div className="bg-white rounded-xl shadow p-6">
+                    <div className="bg-white rounded-xl shadow p-6 border-2 border-green-800 font-open-sans">
                         <h2 className="text-lg font-semibold mb-4">Study Progress</h2>
                         <div className="space-y-4">
                             <div>
@@ -182,12 +182,12 @@ const Dashboard = () => {
                                 </div>
                             </div>
                         </div>
-                        <button className="w-full mt-6 bg-gray-50 hover:bg-gray-100 py-2 rounded-full text-sm font-medium transition-all duration-300">
+                        <button className="w-full mt-6 bg-gray-50 hover:bg-gray-100 py-2 rounded-full text-sm font-medium transition-all duration-300 border-2 border-gray-500 cursor-pointer">
                             View detailed progress
                         </button>
                     </div>
 
-                    <div className="bg-white rounded-xl shadow p-6">
+                    <div className="bg-white rounded-xl shadow p-6 border-2 border-green-800 font-open-sans">
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-lg font-semibold">AI Assistant</h2>
                             <div className="flex items-center text-sm text-green-600">

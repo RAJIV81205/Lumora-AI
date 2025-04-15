@@ -18,7 +18,7 @@ const Sidebar = () => {
     }
 
     return (
-        <nav className="col-span-2 bg-white rounded-xl shadow p-4 min-h-screen">
+        <nav className="col-span-2 bg-white rounded-xl shadow p-4 min-h-screen border-2 border-green-800">
             <ul className="space-y-2">
                 <li>
                     <Link to="/dashboard">
