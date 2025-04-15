@@ -25,12 +25,12 @@ const Navbar = () => {
             <div className="flex space-x-4">
                 <button
                     onClick={() => setIsUploadPopupOpen(true)}
-                    className="bg-green-300 text-gray-900 px-4 py-2 rounded-lg font-medium flex items-center space-x-2 hover:shadow-lg transition-all duration-300 border-2 hover:border-green-600 "
+                    className="bg-green-300 text-gray-900 px-4 py-2 rounded-lg font-medium flex items-center space-x-2 hover:shadow-lg transition-all duration-300 border hover:border-green-600 "
                 >
                     <Upload className="h-5 w-5" />
                     <span>Upload Materials</span>
                 </button>
-                <button className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium flex items-center space-x-2 hover:bg-blue-500 transition-all duration-300 border-blue-950 border-2">
+                <button className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium flex items-center space-x-2 hover:bg-blue-500 transition-all duration-300 border-blue-950 border">
                     <Bot className="h-5 w-5" />
                     <span>Ask AI Assistant</span>
                 </button>

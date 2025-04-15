@@ -10,7 +10,7 @@ import {
     CheckCircle,
     Clock,
     Send,
-    
+
 } from "lucide-react";
 import Sidebar from "./Sidebar";
 import UploadMaterialsPopup from "./UploadMaterialsPopup";
@@ -22,6 +22,8 @@ const Dashboard = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [quote, setQuote] = useState("")
+    const [author, setAuthor] = useState("")
     const url = import.meta.env.VITE_BACKEND_URL;
 
     const verifyToken = async (token) => {
@@ -64,6 +66,22 @@ const Dashboard = () => {
         return words.length;
     }
 
+    
+
+    const getQuote = async () => {
+        const response = await fetch('https://quotes-api-self.vercel.app/quote')
+        const data = await response.json()
+        setQuote(data.quote)
+        setAuthor(data.author)
+
+    }
+
+    useEffect(() => {
+
+        getQuote()
+
+    }, [])
+
     if (isLoading) {
         return <div className="min-h-screen w-full flex justify-center items-center"><span className="loader"></span></div>;
     }
@@ -84,74 +102,72 @@ const Dashboard = () => {
 
 
                 <section className="col-span-7 space-y-6 ">
-                    <div className="bg-gradient-to-r from-green-600 to-green-400 text-white rounded-xl p-6 relative overflow-hidden group border-2 border-green-800 font-open-sans">
+                    <div className="bg-gradient-to-r from-green-600 to-green-400 text-white rounded-xl p-6 relative overflow-hidden group border border-gray-800 font-open-sans">
                         <h2 className="text-2xl font-bold mb-3">Welcome back, {user?.username || 'User'}!</h2>
                         <p className="text-green-100 mb-6 max-w-xl">Continue your learning journey with AI-powered assistance. Upload new materials or continue from where you left off.</p>
-                        <div className="flex space-x-4">
-                            <button className="bg-white text-gray-700 px-4 py-2 rounded-lg font-medium flex items-center space-x-2 hover:shadow-lg transition-all duration-300" onClick={() => setIsUploadPopupOpen(true)}>
-                                <Upload className="h-5 w-5" />
-                                <span>Upload Materials</span>
-                            </button>
-                            <button className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium flex items-center space-x-2 hover:bg-blue-500 transition-all duration-300">
-                                <Bot className="h-5 w-5" />
-                                <span>Ask AI Assistant</span>
-                            </button>
-                        </div>
-                    </div>
+                        <div className="bg-white shadow-md rounded-xl p-4 border-l-4 border-green-500 w-full">
+                            <p className="text-gray-800 italic text-lg">
+                                {quote}
+                            </p>
+                            <p className="text-gray-600 text-right mt-2 font-semibold">– {author}
+                            </p>
 
-                    <div className="bg-white rounded-xl shadow-sm p-6 border-2 border-green-800">
-                        <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-lg font-semibold font-open-sans">Recent Materials</h2>
-                            <Link to="/dashboard/materials" className="text-blue-600 flex items-center hover:underline">
-                                <span>View all</span>
-                                <ArrowRight className="h-4 w-4 ml-1" />
-                            </Link>
                         </div>
-                        <div className="space-y-4">
-                            {user?.material?.length !== 0 ? (
-                                [...user.material]
-                                    .sort((a, b) => b.addedAt.localeCompare(a.addedAt))
-                                    .map((mate, index) => (
-                                        <div key={index} className="flex items-start gap-4 p-4 rounded-lg hover:bg-gray-50 transition-all duration-300 border border-gray-100 hover:border-blue-200">
-                                            <div className="p-3 bg-blue-50 rounded-lg text-blue-600">
-                                                <FileText className="h-5 w-5" />
-                                            </div>
-                                            <div className="flex-1">
-                                                <h3 className="font-medium capitalize font-open-sans text-shadow-gray-900">{mate.subName}</h3>
-                                                <p className="text-sm font-open-sans text-gray-500 ">
-                                                    {countWords(mate.summary) + countWords(mate.study_guide)} words • Processed on <span className="text-gray-700 uppercase font-open-sans">{mate.addedAt}</span>
-                                                </p>
-                                                <div className="flex items-center mt-2 text-sm">
-                                                    <span className="text-green-600 font-medium flex items-center font-open-sans">
-                                                        <CheckCircle className="h-4 w-4 mr-1" />
-                                                        Processed
-                                                    </span>
+                        </div>
+
+                        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-800">
+                            <div className="flex justify-between items-center mb-6">
+                                <h2 className="text-lg font-semibold font-open-sans">Recent Materials</h2>
+                                <Link to="/dashboard/materials" className="text-blue-600 flex items-center hover:underline">
+                                    <span>View all</span>
+                                    <ArrowRight className="h-4 w-4 ml-1" />
+                                </Link>
+                            </div>
+                            <div className="space-y-4">
+                                {user?.material?.length !== 0 ? (
+                                    [...user.material]
+                                        .sort((a, b) => b.addedAt.localeCompare(a.addedAt))
+                                        .map((mate, index) => (
+                                            <div key={index} className="flex items-start gap-4 p-4 rounded-lg hover:bg-gray-50 transition-all duration-300 border border-gray-100 hover:border-blue-200">
+                                                <div className="p-3 bg-blue-50 rounded-lg text-blue-600">
+                                                    <FileText className="h-5 w-5" />
                                                 </div>
+                                                <div className="flex-1">
+                                                    <h3 className="font-medium capitalize font-open-sans text-shadow-gray-900">{mate.subName}</h3>
+                                                    <p className="text-sm font-open-sans text-gray-500 ">
+                                                        {countWords(mate.summary) + countWords(mate.study_guide)} words • Processed on <span className="text-gray-700 uppercase font-open-sans">{mate.addedAt}</span>
+                                                    </p>
+                                                    <div className="flex items-center mt-2 text-sm">
+                                                        <span className="text-green-600 font-medium flex items-center font-open-sans">
+                                                            <CheckCircle className="h-4 w-4 mr-1" />
+                                                            Processed
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <button className="p-2 rounded-full hover:bg-gray-200 transition-all duration-300">
+                                                    <MoreVertical className="h-5 w-5" />
+                                                </button>
                                             </div>
-                                            <button className="p-2 rounded-full hover:bg-gray-200 transition-all duration-300">
-                                                <MoreVertical className="h-5 w-5" />
-                                            </button>
-                                        </div>
-                                    ))
-                            ) : (
-                                <div className="text-center py-12">
-                                    <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No materials yet</h3>
-                                    <p className="text-gray-500 mb-4">Upload your first study material to get started</p>
-                                    <button
-                                        className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-all duration-300"
-                                        onClick={() => setIsUploadPopupOpen(true)}
-                                    >
-                                        Upload Material
-                                    </button>
-                                </div>
-                            )}
+                                        ))
+                                ) : (
+                                    <div className="text-center py-12">
+                                        <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                                        <h3 className="text-lg font-semibold text-gray-900 mb-2">No materials yet</h3>
+                                        <p className="text-gray-500 mb-4">Upload your first study material to get started</p>
+                                        <button
+                                            className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-all duration-300"
+                                            onClick={() => setIsUploadPopupOpen(true)}
+                                        >
+                                            Upload Material
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                    </div>
                 </section >
 
                 <aside className="col-span-3 space-y-6">
-                    <div className="bg-white rounded-xl shadow p-6 border-2 border-green-800 font-open-sans">
+                    <div className="bg-white rounded-xl shadow p-6 border border-gray-800 font-open-sans">
                         <h2 className="text-lg font-semibold mb-4">Study Progress</h2>
                         <div className="space-y-4">
                             <div>
@@ -187,7 +203,7 @@ const Dashboard = () => {
                         </button>
                     </div>
 
-                    <div className="bg-white rounded-xl shadow p-6 border-2 border-green-800 font-open-sans">
+                    <div className="bg-white rounded-xl shadow p-6 border border-gray-800 font-open-sans">
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-lg font-semibold">AI Assistant</h2>
                             <div className="flex items-center text-sm text-green-600">
