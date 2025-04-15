@@ -10,9 +10,9 @@ const Navbar = () => {
     return (
         <header className="flex justify-between items-center mb-8">
             <Link to="/" className="flex items-center space-x-2">
-                <div className="bg-white text-white p-2 rounded-full transform hover:rotate-6 transition-transform duration-300">
+                <div className=" text-white p-2 rounded-full transform hover:rotate-6 transition-transform duration-300">
                     <svg
-                        className="w-8 h-8 text-green-400"
+                        className="w-8 h-8 text-green-500"
                         viewBox="0 0 24 24"
                         fill="currentColor"
                         
