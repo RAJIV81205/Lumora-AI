@@ -9,7 +9,8 @@ import {
     MoreVertical,
     CheckCircle,
     Clock,
-    Send
+    Send,
+    
 } from "lucide-react";
 import Sidebar from "./Sidebar";
 import UploadMaterialsPopup from "./UploadMaterialsPopup";
@@ -107,41 +108,44 @@ const Dashboard = () => {
                             </Link>
                         </div>
                         <div className="space-y-4">
-                            {user?.material?.length != 0 && (
+                            {user?.material?.length !== 0 ? (
                                 [...user.material]
                                     .sort((a, b) => b.addedAt.localeCompare(a.addedAt))
                                     .map((mate, index) => (
-                                    <div key={index} className="flex items-start gap-4 p-4 rounded-lg hover:bg-gray-50 transition-all duration-300 border border-gray-100 hover:border-blue-200">
-                                        <div className="p-3 bg-blue-50 rounded-lg text-blue-600">
-                                            <FileText className="h-5 w-5" />
-                                        </div>
-                                        <div className="flex-1">
-                                            <h3 className="font-medium capitalize font-open-sans text-shadow-gray-900">{mate.subName}</h3>
-                                            <p className="text-sm font-open-sans text-gray-500 "> 
-                                                { countWords(mate.summary) + countWords(mate.study_guide) } words • Processed on <span className="text-gray-700 uppercase font-open-sans">{mate.addedAt}</span></p>
-                                            <div className="flex items-center mt-2 text-sm">
-                                                <span className="text-green-600 font-medium flex items-center font-open-sans">
-                                                    <CheckCircle className="h-4 w-4 mr-1" />
-                                                    Processed
-                                                </span>
+                                        <div key={index} className="flex items-start gap-4 p-4 rounded-lg hover:bg-gray-50 transition-all duration-300 border border-gray-100 hover:border-blue-200">
+                                            <div className="p-3 bg-blue-50 rounded-lg text-blue-600">
+                                                <FileText className="h-5 w-5" />
                                             </div>
+                                            <div className="flex-1">
+                                                <h3 className="font-medium capitalize font-open-sans text-shadow-gray-900">{mate.subName}</h3>
+                                                <p className="text-sm font-open-sans text-gray-500 ">
+                                                    {countWords(mate.summary) + countWords(mate.study_guide)} words • Processed on <span className="text-gray-700 uppercase font-open-sans">{mate.addedAt}</span>
+                                                </p>
+                                                <div className="flex items-center mt-2 text-sm">
+                                                    <span className="text-green-600 font-medium flex items-center font-open-sans">
+                                                        <CheckCircle className="h-4 w-4 mr-1" />
+                                                        Processed
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <button className="p-2 rounded-full hover:bg-gray-200 transition-all duration-300">
+                                                <MoreVertical className="h-5 w-5" />
+                                            </button>
                                         </div>
-                                        <button className="p-2 rounded-full hover:bg-gray-200 transition-all duration-300">
-                                            <MoreVertical className="h-5 w-5" />
-                                        </button>
-                                    </div>
-                                ))
+                                    ))
+                            ) : (
+                                <div className="text-center py-12">
+                                    <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No materials yet</h3>
+                                    <p className="text-gray-500 mb-4">Upload your first study material to get started</p>
+                                    <button
+                                        className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-all duration-300"
+                                        onClick={() => setIsUploadPopupOpen(true)}
+                                    >
+                                        Upload Material
+                                    </button>
+                                </div>
                             )}
-
-
-
-
-
-
-
-
-
-
                         </div>
                     </div>
                 </section >
