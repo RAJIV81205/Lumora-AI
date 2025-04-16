@@ -5,7 +5,6 @@ import os
 from openai import OpenAI
 import json
 from dotenv import load_dotenv
-from flask_asgi import FlaskASGI
 
 load_dotenv()
 
@@ -26,9 +25,6 @@ client = OpenAI(
     api_key=OPENAI_API_KEY,
     base_url="https://api.aimlapi.com/v1"
 )
-
-# Convert Flask app to ASGI
-asgi_app = FlaskASGI(app)
 
 def summarize_text(text):
     system_prompt = """You are an expert educational assistant specializing in creating clear, concise, and helpful summaries of academic materials. 
@@ -211,5 +207,9 @@ def study_guide():
     return jsonify({'study_guide': study_guide}), 200
 
 if __name__ == '__main__':
-    import uvicorn
-    uvicorn.run(asgi_app, host="0.0.0.0", port=int(os.getenv("PORT", 8000)))
+    import hypercorn.asyncio
+    import asyncio
+    
+    config = hypercorn.Config()
+    config.bind = ["0.0.0.0:8000"]
+    asyncio.run(hypercorn.asyncio.serve(app, config))
