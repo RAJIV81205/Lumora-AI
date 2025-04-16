@@ -9,7 +9,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+
+# Configure CORS with specific origins and methods
+CORS(app, resources={
+    r"/*": {
+        "origins": ["https://lumora-ai.vercel.app"],
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"]
+    }
+})
 
 # Configure upload folder
 UPLOAD_FOLDER = './uploads'
@@ -25,6 +33,14 @@ client = OpenAI(
     api_key=OPENAI_API_KEY,
     base_url="https://api.aimlapi.com/v1"
 )
+
+# Add OPTIONS handler for CORS preflight requests
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', 'https://lumora-ai.vercel.app')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
+    return response
 
 def summarize_text(text):
     system_prompt = """You are an expert educational assistant specializing in creating clear, concise, and helpful summaries of academic materials. 
