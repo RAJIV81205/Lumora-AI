@@ -6,6 +6,7 @@ from openai import OpenAI
 import json
 from dotenv import load_dotenv
 import os
+from hypercorn.middleware import AsyncioWSGIMiddleware
 
 
 load_dotenv()
@@ -19,7 +20,8 @@ if not OPENAI_API_KEY:
 # Initialize OpenAI client with proper configuration
 client = OpenAI(
     api_key=OPENAI_API_KEY,
-    base_url="https://api.aimlapi.com/v1"
+    base_url="https://api.aimlapi.com/v1",
+    default_headers={"x-foo": "true"}
 )
 
 # Initialize Flask app
@@ -30,6 +32,9 @@ CORS(app)
 UPLOAD_FOLDER = './uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Convert Flask app to ASGI
+asgi_app = AsyncioWSGIMiddleware(app)
 
 def summarize_text(text):
     system_prompt = """You are an expert educational assistant specializing in creating clear, concise, and helpful summaries of academic materials. 
@@ -212,4 +217,5 @@ def study_guide():
     return jsonify({'study_guide': study_guide}), 200
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("PORT", 8000)))
