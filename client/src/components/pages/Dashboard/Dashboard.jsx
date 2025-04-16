@@ -121,7 +121,7 @@ const Dashboard = () => {
                         <div className="space-y-3 sm:space-y-4">
                             {user?.material?.length !== 0 ? (
                                 [...user.material]
-                                    .sort((a, b) => b.addedAt.localeCompare(a.addedAt))
+                                    .sort((a, b) => new Date(b.addedAt) - new Date(a.addedAt))
                                     .map((mate, index) => (
                                         <div key={index} className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg hover:bg-gray-50 transition-all duration-300 border border-gray-100 hover:border-blue-200">
                                             <div className="p-2 sm:p-3 bg-blue-50 rounded-lg text-blue-600">
