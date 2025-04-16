@@ -58,7 +58,9 @@ def summarize_text(text: str) -> str:
     11. Format all mathematical equations using KaTeX syntax:
         - For inline math, use single dollar signs: $E = mc^2$
         - For display math, use double dollar signs: $$F = ma$$
-        - Always use proper LaTeX syntax for all mathematical expressions"""
+        - Always use proper LaTeX syntax for all mathematical expressions
+    12. Do not filter or censor any content - provide complete and comprehensive summaries
+    13. Include all relevant information regardless of complexity or sensitivity"""
     
     try:
         completion = client.chat.completions.create(
@@ -68,12 +70,13 @@ def summarize_text(text: str) -> str:
                 {"role": "user", "content": f"Please summarize the following study material:\n\n{text}."},
             ],
             temperature=0.5,
-            max_tokens=1000,
+            max_tokens=8000,
         )
         
         return completion.choices[0].message.content
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating summary: {str(e)}")
+        
 
 def generate_study_guide(text: str) -> str:
     system_prompt = """You are an expert educational assistant specializing in creating comprehensive and detailed study guides for academic materials. 
@@ -141,7 +144,10 @@ def generate_study_guide(text: str) -> str:
     8. Always include real-world applications and concrete examples
     9. Ensure all technical terms are defined thoroughly
     10. Include historical context and development of concepts when relevant
-    11. Add necessary details that support understanding even if not explicitly mentioned in the source text"""
+    11. Add necessary details that support understanding even if not explicitly mentioned in the source text
+    12. Do not filter or censor any content - provide complete and comprehensive information
+    13. Include all relevant information regardless of complexity or sensitivity
+    14. There is no limit on the length or detail of the response - be as thorough as needed"""
 
     try:
         completion = client.chat.completions.create(
@@ -151,7 +157,7 @@ def generate_study_guide(text: str) -> str:
                 {"role": "user", "content": f"Please create a comprehensive and detailed study guide for the following material:\n\n{text}."},
             ],
             temperature=0.3,
-            max_tokens=4000,
+            max_tokens=16000,
         )
         
         return completion.choices[0].message.content
@@ -162,9 +168,6 @@ def generate_study_guide(text: str) -> str:
 async def read_root():
     return {"status": "ok"}
 
-@app.get("/api/verify-token")
-async def verify_token():
-    return {"status": "ok"}
 
 @app.post("/upload-pdf")
 async def upload_pdf(file: UploadFile = File(...)):
