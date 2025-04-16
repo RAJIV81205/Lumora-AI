@@ -18,6 +18,7 @@ const Material = () => {
 
   const [materials, setMaterials] = useState([]);
   const menuRef = useRef(null);
+ 
 
   const url = import.meta.env.VITE_BACKEND_URL
   const token = localStorage.getItem('token')
@@ -184,6 +185,7 @@ const Material = () => {
   };
 
   const handleDelete = async (materialId) => {
+    setIsLoading(true);
     try {
       const response = await fetch(`${url}/delete/material`, {
         method: 'POST',
@@ -199,14 +201,18 @@ const Material = () => {
       if (response.ok) {
         getMaterials();
         alert('Material deleted successfully!');
+        setIsLoading(false)
       } else {
         setError(data.message || 'Failed to delete material');
+        setIsLoading(false)
 
         // Implement the logic to delete the material
         setOpenMenuId(null); // Close the menu after action
       }}catch (error) {
         console.error('Error deleting material:', error);
         setError('Failed to delete material. Please try again.');
+        setIsLoading(false)
+
       }
     };
 
@@ -308,7 +314,7 @@ const Material = () => {
                               </span>
                               <div className="relative">
                                 <button
-                                  className="p-2 rounded-full hover:bg-gray-100 transition-all duration-300 opacity-0 group-hover:opacity-100"
+                                  className="p-2 rounded-full hover:bg-gray-100 transition-all duration-300 opacity-80 group-hover:opacity-100"
                                   onClick={(e) => toggleOptionsMenu(material.id || index, e)}
                                 >
                                   <MoreVertical className="h-5 w-5 text-gray-500" />
