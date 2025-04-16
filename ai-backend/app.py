@@ -1,22 +1,31 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 import pdfplumber
 import os
 from openai import OpenAI
 import json
 from dotenv import load_dotenv
+from typing import Optional
+import shutil
 
 load_dotenv()
 
-app = Flask(__name__)
+app = FastAPI()
 
-# Enable CORS for all routes
-CORS(app, supports_credentials=True)
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Configure upload folder
 UPLOAD_FOLDER = './uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Initialize OpenAI client
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
@@ -28,23 +37,10 @@ client = OpenAI(
     base_url="https://api.aimlapi.com/v1"
 )
 
-@app.route('/')
-def index():
-    return jsonify({"status": "ok"})
+class TextRequest(BaseModel):
+    text: str
 
-@app.route('/api/verify-token')
-def verify_token():
-    return jsonify({"status": "ok"})
-
-# Add CORS headers to all responses
-@app.after_request
-def add_cors_headers(response):
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
-    response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
-    return response
-
-def summarize_text(text):
+def summarize_text(text: str) -> str:
     system_prompt = """You are an expert educational assistant specializing in creating clear, concise, and helpful summaries of academic materials. 
     Your goal is to help students understand complex topics by breaking them down into digestible parts.
     
@@ -64,25 +60,22 @@ def summarize_text(text):
         - For display math, use double dollar signs: $$F = ma$$
         - Always use proper LaTeX syntax for all mathematical expressions"""
     
-    user_prompt = f"Please summarize the following study material:\n\n{text}."
-    
     try:
         completion = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt},
+                {"role": "user", "content": f"Please summarize the following study material:\n\n{text}."},
             ],
             temperature=0.5,
             max_tokens=1000,
         )
         
-        summary = completion.choices[0].message.content
-        return summary
+        return completion.choices[0].message.content
     except Exception as e:
-        return f"Error generating summary: {str(e)}"
+        raise HTTPException(status_code=500, detail=f"Error generating summary: {str(e)}")
 
-def generate_study_guide(text):
+def generate_study_guide(text: str) -> str:
     system_prompt = """You are an expert educational assistant specializing in creating comprehensive and detailed study guides for academic materials. 
     Your goal is to help students master complex topics by providing structured, detailed, and visually appealing study guides.
 
@@ -150,79 +143,59 @@ def generate_study_guide(text):
     10. Include historical context and development of concepts when relevant
     11. Add necessary details that support understanding even if not explicitly mentioned in the source text"""
 
-    user_prompt = f"Please create a comprehensive and detailed study guide for the following material. Make sure to include EVERY important detail, concept, formula, and explanation from the text. Be exceptionally thorough and leave nothing important out:\n\n{text}."
-
     try:
         completion = client.chat.completions.create(
-            model="gpt-4o-mini",  # Consider using a more powerful model if available
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt},
+                {"role": "user", "content": f"Please create a comprehensive and detailed study guide for the following material:\n\n{text}."},
             ],
-            temperature=0.3,  # Lower temperature for more detailed and comprehensive output
-            max_tokens=4000,  # Increased token limit for much more detailed responses
+            temperature=0.3,
+            max_tokens=4000,
         )
-
-        study_guide = completion.choices[0].message.content
-
-        # Return the study guide content directly as a string
-        # This matches what your frontend expects based on your React component
-        return study_guide
+        
+        return completion.choices[0].message.content
     except Exception as e:
-        return f"Error generating study guide: {str(e)}"
+        raise HTTPException(status_code=500, detail=f"Error generating study guide: {str(e)}")
 
-# Upload and process PDF
-@app.route('/upload-pdf', methods=['POST'])
-def upload_pdf():
-    if 'file' not in request.files:
-        return jsonify({'error': 'No file part'}), 400
+@app.get("/")
+async def read_root():
+    return {"status": "ok"}
 
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({'error': 'No file selected'}), 400
+@app.get("/api/verify-token")
+async def verify_token():
+    return {"status": "ok"}
 
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-    file.save(file_path)
-
-    if file.filename.endswith('.pdf'):
-        try:
-            with pdfplumber.open(file_path) as pdf:
-                text = ''.join([page.extract_text() or '' for page in pdf.pages])
-            # Delete the file after processing
-            os.remove(file_path)
-            return jsonify({'text': text}), 200
-        except Exception as e:
-            # Make sure to delete the file even if processing fails
-            if os.path.exists(file_path):
-                os.remove(file_path)
-            return jsonify({'error': f'PDF processing failed: {str(e)}'}), 500
-    else:
-        # Delete the file if it's not a PDF
+@app.post("/upload-pdf")
+async def upload_pdf(file: UploadFile = File(...)):
+    if not file.filename.endswith('.pdf'):
+        raise HTTPException(status_code=400, detail="Only PDFs are supported")
+    
+    file_path = os.path.join(UPLOAD_FOLDER, file.filename)
+    try:
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        
+        with pdfplumber.open(file_path) as pdf:
+            text = ''.join([page.extract_text() or '' for page in pdf.pages])
+        
         os.remove(file_path)
-        return jsonify({'error': 'Only PDFs are supported'}), 400
+        return {"text": text}
+    except Exception as e:
+        if os.path.exists(file_path):
+            os.remove(file_path)
+        raise HTTPException(status_code=500, detail=f"PDF processing failed: {str(e)}")
 
-@app.route('/summarize', methods=['POST'])
-def summarize():
-    data = request.json
-    if not data or 'text' not in data:
-        return jsonify({'error': 'No text provided'}), 400
-    
-    text = data['text']
-    summary = summarize_text(text)
-    
-    return jsonify({'summary': summary}), 200
+@app.post("/summarize")
+async def summarize(request: TextRequest):
+    summary = summarize_text(request.text)
+    return {"summary": summary}
 
-@app.route('/study-guide', methods=['POST'])
-def study_guide():
-    data = request.json
-    if not data or 'text' not in data:
-        return jsonify({'error': 'No text provided'}), 400
-    
-    text = data['text']
-    study_guide = generate_study_guide(text)
-    
-    # Return the study guide as a string
-    return jsonify({'study_guide': study_guide}), 200
+@app.post("/study-guide")
+async def study_guide(request: TextRequest):
+    guide = generate_study_guide(request.text)
+    return {"study_guide": guide}
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8000)))
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("PORT", 8000)))
