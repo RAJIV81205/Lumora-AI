@@ -77,7 +77,7 @@ const LandingPage = () => {
             transition={{ duration: 0.8 }}
         >
             <motion.header 
-                className="py-6 px-8 flex justify-between items-center relative z-50"
+                className="py-6 px-2 flex justify-between items-center relative z-50"
                 initial={{ y: -50, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.6 }}
