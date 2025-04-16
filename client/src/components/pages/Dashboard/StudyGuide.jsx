@@ -103,38 +103,38 @@ const StudyGuide = ({ material }) => {
   }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-scroll w-full">
-      <div className="mb-8 border-b pb-4">
-        <div className="flex items-center space-x-2 mb-3">
-          <BookOpen className="text-blue-600" size={24} />
-          <h1 className="text-3xl font-bold text-gray-800">{studyGuideData.title}</h1>
+    <div className="p-4 sm:p-6 max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-scroll w-full">
+      <div className="mb-6 sm:mb-8 border-b pb-3 sm:pb-4">
+        <div className="flex items-center space-x-2 mb-2 sm:mb-3">
+          <BookOpen className="text-blue-600" size={20} />
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">{studyGuideData.title}</h1>
         </div>
-        <p className="text-gray-600 italic">{studyGuideData.overview}</p>
+        <p className="text-sm sm:text-base text-gray-600 italic">{studyGuideData.overview}</p>
       </div>
       
-      <div className="mb-4 flex justify-between items-center">
-        <span className="text-sm text-gray-500">
+      <div className="mb-3 sm:mb-4 flex justify-between items-center">
+        <span className="text-xs sm:text-sm text-gray-500">
           {parsedSections.length} {parsedSections.length === 1 ? 'section' : 'sections'}
         </span>
         <button 
           onClick={handleExpandAll}
-          className="flex items-center space-x-1 text-blue-600 hover:text-blue-800 text-sm font-medium"
+          className="flex items-center space-x-1 text-blue-600 hover:text-blue-800 text-xs sm:text-sm font-medium"
         >
           {expandAll ? (
             <>
-              <ChevronUp size={16} />
+              <ChevronUp size={14} />
               <span>Collapse All</span>
             </>
           ) : (
             <>
-              <ChevronDown size={16} />
+              <ChevronDown size={14} />
               <span>Expand All</span>
             </>
           )}
         </button>
       </div>
       
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         {parsedSections.map((section, index) => {
           const isOpen = sections[section.title];
           
@@ -144,27 +144,27 @@ const StudyGuide = ({ material }) => {
               className="border rounded-lg shadow-sm overflow-hidden transition-all duration-200"
             >
               <div
-                className={`flex items-center justify-between p-4 cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors ${isOpen ? 'border-b' : ''}`}
+                className={`flex items-center justify-between p-3 sm:p-4 cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors ${isOpen ? 'border-b' : ''}`}
                 onClick={() => toggleSection(section.title)}
               >
-                <h2 className="text-xl font-semibold text-gray-800">{section.title}</h2>
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-800">{section.title}</h2>
                 <div className="text-blue-600">
-                  {isOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                  {isOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                 </div>
               </div>
               
               {isOpen && (
-                <div className="p-4 bg-white">
-                  <div className="prose prose-slate max-w-none">
+                <div className="p-3 sm:p-4 bg-white">
+                  <div className="prose prose-slate max-w-none text-sm sm:text-base">
                     <ReactMarkdown
                       children={section.content}
                       remarkPlugins={[remarkMath]}
                       rehypePlugins={[rehypeKatex]}
                       components={{
-                        h3: ({node, ...props}) => <h3 className="text-lg font-semibold mt-4 mb-2" {...props} />,
-                        ul: ({node, ...props}) => <ul className="list-disc pl-5 my-2" {...props} />,
-                        li: ({node, ...props}) => <li className="mb-1" {...props} />,
-                        p: ({node, ...props}) => <p className="mb-3" {...props} />
+                        h3: ({node, ...props}) => <h3 className="text-base sm:text-lg font-semibold mt-3 sm:mt-4 mb-1.5 sm:mb-2" {...props} />,
+                        ul: ({node, ...props}) => <ul className="list-disc pl-4 sm:pl-5 my-1.5 sm:my-2" {...props} />,
+                        li: ({node, ...props}) => <li className="mb-0.5 sm:mb-1" {...props} />,
+                        p: ({node, ...props}) => <p className="mb-2 sm:mb-3" {...props} />
                       }}
                     />
                   </div>
@@ -176,7 +176,7 @@ const StudyGuide = ({ material }) => {
       </div>
       
       {parsedSections.length === 0 && (
-        <div className="text-center py-8 text-gray-500">
+        <div className="text-center py-6 sm:py-8 text-gray-500 text-sm sm:text-base">
           No sections found in this study guide.
         </div>
       )}

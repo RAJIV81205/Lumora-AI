@@ -185,20 +185,20 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl p-6 w-full max-w-3xl relative max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl p-4 sm:p-6 w-full max-w-3xl relative max-h-[90vh] overflow-y-auto">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+          className="absolute top-2 sm:top-4 right-2 sm:right-4 text-gray-500 hover:text-gray-700"
         >
-          <X className="h-6 w-6" />
+          <X className="h-5 w-5 sm:h-6 sm:w-6" />
         </button>
 
-        <h2 className="text-2xl font-bold text-gray-800 mb-6 font-nunito-sans">Upload Materials</h2>
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6 font-nunito-sans">Upload Materials</h2>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
           <div>
-            <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="subject" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
               Subject Name
             </label>
             <input
@@ -206,24 +206,24 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
               id="subject"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               placeholder="Enter subject name"
             />
           </div>
 
           <div>
-            <label htmlFor="file" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="file" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
               Upload File (PDF, max 5MB)
             </label>
             <div
-              className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'} border-dashed rounded-lg`}
+              className={`mt-1 flex justify-center px-4 sm:px-6 pt-4 sm:pt-5 pb-4 sm:pb-6 border-2 ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'} border-dashed rounded-lg`}
               onDragEnter={handleDragEnter}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
             >
               <div className="space-y-1 text-center">
-                <div className="flex text-sm text-gray-600">
+                <div className="flex text-xs sm:text-sm text-gray-600">
                   <label
                     htmlFor="file-upload"
                     className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500"
@@ -241,48 +241,46 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
                   </label>
                   <p className="pl-1">or drag and drop</p>
                 </div>
-                <p className="text-xs text-gray-500">PDF up to 5MB</p>
+                <p className="text-[10px] sm:text-xs text-gray-500">PDF up to 5MB</p>
               </div>
             </div>
             {file && (
-              <p className="mt-2 text-sm text-gray-600">
+              <p className="mt-2 text-xs sm:text-sm text-gray-600">
                 Selected file: {file.name}
               </p>
             )}
           </div>
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-
-          <div className="flex justify-end space-x-3 mt-6">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
-            >
-              {isLoading ? 'Processing...' : 'Upload'}
-            </button>
-          </div>
-        </form>
-
-        {isLoading && (
-          <div className="mt-6 flex flex-col items-center justify-center">
-            <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
-              <div 
-                className="bg-green-600 h-2.5 rounded-full transition-all duration-500 ease-in-out" 
-                style={{ width: `${progress}%` }}
-              ></div>
+          {error && (
+            <div className="text-red-600 text-xs sm:text-sm">
+              {error}
             </div>
-            <p className="mt-2 text-gray-900 font-nunito-sans animate-pulse">{loadingMessage}</p>
-            <p className="text-sm text-gray-500 font-open-sans">{progress}% complete</p>
-          </div>
-        )}
+          )}
+
+          {isLoading && (
+            <div className="space-y-2">
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div
+                  className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${progress}%` }}
+                ></div>
+              </div>
+              <p className="text-xs sm:text-sm text-gray-600 text-center">{loadingMessage}</p>
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className={`w-full py-2 sm:py-3 px-4 sm:px-6 rounded-lg font-medium text-sm sm:text-base transition-all duration-300 ${
+              isLoading
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-blue-600 hover:bg-blue-700 text-white'
+            }`}
+          >
+            {isLoading ? 'Processing...' : 'Upload and Process'}
+          </button>
+        </form>
       </div>
     </div>
   );

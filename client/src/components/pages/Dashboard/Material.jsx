@@ -232,7 +232,7 @@ const Material = () => {
     }
 
     return (
-      <div className="font-sans bg-gradient-to-r from-green-50 to-green-100 rounded-xl shadow-md p-6 w-full">
+      <div className="font-sans bg-gradient-to-br from-green-200 to-white rounded-xl shadow-md p-6 w-full">
         <UploadMaterialsPopup
           isOpen={isUploadPopupOpen}
           onClose={() => setIsUploadPopupOpen(false)}
