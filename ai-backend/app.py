@@ -5,26 +5,9 @@ import os
 from openai import OpenAI
 import json
 from dotenv import load_dotenv
-import os
-from hypercorn.middleware import AsyncioWSGIMiddleware
-
 
 load_dotenv()
 
-
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-
-if not OPENAI_API_KEY:
-    raise ValueError("OPENAI_API_KEY not found in environment variables")
-
-# Initialize OpenAI client with proper configuration
-client = OpenAI(
-    api_key=OPENAI_API_KEY,
-    base_url="https://api.aimlapi.com/v1",
-    default_headers={"x-foo": "true"}
-)
-
-# Initialize Flask app
 app = Flask(__name__)
 CORS(app)
 
@@ -33,8 +16,15 @@ UPLOAD_FOLDER = './uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Convert Flask app to ASGI
-asgi_app = AsyncioWSGIMiddleware(app)
+# Initialize OpenAI client
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+if not OPENAI_API_KEY:
+    raise ValueError("OPENAI_API_KEY not found in environment variables")
+
+client = OpenAI(
+    api_key=OPENAI_API_KEY,
+    base_url="https://api.aimlapi.com/v1"
+)
 
 def summarize_text(text):
     system_prompt = """You are an expert educational assistant specializing in creating clear, concise, and helpful summaries of academic materials. 
