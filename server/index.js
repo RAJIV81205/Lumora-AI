@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 dotenv.config();
 app.use(cors({
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173" , "https://lumora-ai.vercel.app/"],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
     preflightContinue: false,
