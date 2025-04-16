@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { X } from 'lucide-react';
+import { X, FileText } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
@@ -185,7 +185,7 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-60 p-4">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-60 p-4 font-open-sans">
       <div className="bg-white rounded-xl p-4 sm:p-6 w-full max-w-3xl relative max-h-[90vh] overflow-y-auto">
         <button
           onClick={onClose}
@@ -216,13 +216,16 @@ const UploadMaterialsPopup = ({ isOpen, onClose }) => {
               Upload File (PDF, max 5MB)
             </label>
             <div
-              className={`mt-1 flex justify-center px-4 sm:px-6 pt-4 sm:pt-5 pb-4 sm:pb-6 border-2 ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'} border-dashed rounded-lg`}
+              className={`mt-1 flex justify-center px-4 sm:px-6 pt-4 sm:pt-5 pb-4 sm:pb-6 border-2 ${
+                isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
+              } border-dashed rounded-lg transition-colors duration-200`}
               onDragEnter={handleDragEnter}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
             >
-              <div className="space-y-1 text-center">
+              <div className="space-y-2 text-center flex flex-col items-center">
+                <FileText className="h-10 w-10 text-gray-400" />
                 <div className="flex text-xs sm:text-sm text-gray-600">
                   <label
                     htmlFor="file-upload"
