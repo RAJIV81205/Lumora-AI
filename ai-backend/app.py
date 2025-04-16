@@ -3,8 +3,18 @@ from flask_cors import CORS
 import pdfplumber
 import os
 from openai import OpenAI
-from config import OPENAI_API_KEY
 import json
+from dotenv import load_dotenv
+import os
+
+
+load_dotenv()
+
+
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+
+if not OPENAI_API_KEY:
+    raise ValueError("OPENAI_API_KEY not found in environment variables")
 
 base_url = "https://api.aimlapi.com/v1"
 api_key = OPENAI_API_KEY
