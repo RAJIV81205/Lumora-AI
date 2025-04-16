@@ -266,14 +266,14 @@ const Material = () => {
           <main className="grid grid-cols-12 gap-6">
             <Sidebar />
 
-            <section className="col-span-10 space-y-6 ">
+            <section className="md:col-span-10 space-y-6 col-span-12 ">
               <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-800">
                 <div className="flex justify-between items-center mb-6 w-full">
                   <div>
                     <h2 className="text-2xl font-bold text-gray-900 mb-2 font-open-sans">My Materials</h2>
                     <p className="text-gray-500">Manage and view your uploaded study materials</p>
                   </div>
-                  <div className="flex items-center space-x-4">
+                  <div className=" hidden lg:flex items-center space-x-4">
                     <button
                       className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium flex items-center space-x-2 hover:bg-blue-700 transition-all duration-300"
                       onClick={() => setIsUploadPopupOpen(true)}

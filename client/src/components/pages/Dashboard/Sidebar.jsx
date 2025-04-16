@@ -21,7 +21,7 @@ const Sidebar = () => {
     return (
         <>
             {/* Mobile Menu Button */}
-            <div className="md:hidden fixed top-2 right-4 z-50">
+            <div className="md:hidden fixed top-4 right-4 z-50">
                 <button
                     onClick={() => setIsOpen(!isOpen)}
                     className="p-2 rounded-lg shadow-md bg-green-200 hover:bg-gray-50 border border-gray-900"
