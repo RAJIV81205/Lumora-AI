@@ -10,14 +10,8 @@ load_dotenv()
 
 app = Flask(__name__)
 
-# Configure CORS with specific origins and methods
-CORS(app, resources={
-    r"/*": {
-        "origins": ["https://lumora-ai.vercel.app"],
-        "methods": ["GET", "POST", "OPTIONS"],
-        "allow_headers": ["Content-Type", "Authorization"]
-    }
-})
+# Enable CORS for all routes
+CORS(app, supports_credentials=True)
 
 # Configure upload folder
 UPLOAD_FOLDER = './uploads'
@@ -34,12 +28,20 @@ client = OpenAI(
     base_url="https://api.aimlapi.com/v1"
 )
 
-# Add OPTIONS handler for CORS preflight requests
+@app.route('/')
+def index():
+    return jsonify({"status": "ok"})
+
+@app.route('/api/verify-token')
+def verify_token():
+    return jsonify({"status": "ok"})
+
+# Add CORS headers to all responses
 @app.after_request
-def after_request(response):
-    response.headers.add('Access-Control-Allow-Origin', 'https://lumora-ai.vercel.app')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-    response.headers.add('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
+def add_cors_headers(response):
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
     return response
 
 def summarize_text(text):
@@ -223,9 +225,4 @@ def study_guide():
     return jsonify({'study_guide': study_guide}), 200
 
 if __name__ == '__main__':
-    import hypercorn.asyncio
-    import asyncio
-    
-    config = hypercorn.Config()
-    config.bind = ["0.0.0.0:8000"]
-    asyncio.run(hypercorn.asyncio.serve(app, config))
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8000)))
