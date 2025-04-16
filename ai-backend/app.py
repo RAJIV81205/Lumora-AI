@@ -16,9 +16,11 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 if not OPENAI_API_KEY:
     raise ValueError("OPENAI_API_KEY not found in environment variables")
 
-base_url = "https://api.aimlapi.com/v1"
-api_key = OPENAI_API_KEY
-api = OpenAI(api_key=api_key, base_url=base_url)
+# Initialize OpenAI client with proper configuration
+client = OpenAI(
+    api_key=OPENAI_API_KEY,
+    base_url="https://api.aimlapi.com/v1"
+)
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -52,7 +54,7 @@ def summarize_text(text):
     user_prompt = f"Please summarize the following study material:\n\n{text}."
     
     try:
-        completion = api.chat.completions.create(
+        completion = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": system_prompt},
@@ -138,7 +140,7 @@ def generate_study_guide(text):
     user_prompt = f"Please create a comprehensive and detailed study guide for the following material. Make sure to include EVERY important detail, concept, formula, and explanation from the text. Be exceptionally thorough and leave nothing important out:\n\n{text}."
 
     try:
-        completion = api.chat.completions.create(
+        completion = client.chat.completions.create(
             model="gpt-4o-mini",  # Consider using a more powerful model if available
             messages=[
                 {"role": "system", "content": system_prompt},
