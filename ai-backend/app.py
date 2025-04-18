@@ -202,7 +202,8 @@ def generate_quiz(text: str) -> str:
        - For inline math, use single dollar signs: $E = mc^2$
        - For display math, use double dollar signs: $$F = ma$$
     6. Use Markdown for formatting: headers (##), bullet points, bold (**text**), etc.
-    3. Do not filter or censor any content - provide complete and comprehensive information
+    7. Do not filter or censor any content - provide complete and comprehensive information
+    8. Read all the content of the material carefully before creating the quiz
     
     """
 
