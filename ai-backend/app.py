@@ -166,45 +166,30 @@ def generate_study_guide(text: str) -> str:
 
 
 def generate_quiz(text: str) -> str:
-    system_prompt = """You are an expert educational assistant specializing in creating comprehensive and detailed quizzes for academic materials. 
-    Your goal is to help students master complex topics by providing structured, detailed, and visually appealing quizzes.
+    system_prompt = """You are an expert educational assistant specializing in creating comprehensive quizzes.
+    Your task is to create a quiz based on the provided material.
     
+    The quiz should be returned in the following JSON format:
+    {
+        "questions": [
+            {
+                "question": "The question text here",
+                "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
+                "correctAnswer": "The correct option here (must match exactly with one of the options)"
+            },
+            // ... more questions
+        ]
+    }
     
-    Format your response exactly as follows:
-    # Quiz Title 
-    
-    ## Question 1
-    - [Question 1]
-    - [Option 1]
-    - [Option 2]
-    - [Option 3]
-    - [Option 4]
-    - [Correct Answer]
-
-    ## Question 2
-    - [Question 2]
-    - [Option 1]
-    - [Option 2]
-    - [Option 3]
-    - [Option 4]
-    - [Correct Answer]
-    .
-    .
-    .
-    [Continue with total 20 questions...]
-    
-    When creating the quiz:
-    1. Make sure the questions are not too easy or too difficult
-    2. Make sure the questions are not too general or too specific
-    3. Make sure the questions are not too long or too short
-    4. Make sure the questions are not too similar to each other
-    5. Format all mathematical equations using KaTeX syntax:
-       - For inline math, use single dollar signs: $E = mc^2$
-       - For display math, use double dollar signs: $$F = ma$$
-    6. Use Markdown for formatting: headers (##), bullet points, bold (**text**), etc.
-    7. Do not filter or censor any content - provide complete and comprehensive information
-    8. Read all the content of the material carefully before creating the quiz
-    
+    Guidelines for creating the quiz:
+    1. Create exactly 20 questions
+    2. Each question must have exactly 4 options
+    3. The correctAnswer must match EXACTLY with one of the options
+    4. Questions should vary in difficulty
+    5. Make sure all questions are relevant to the material
+    6. The correct answer should be randomly distributed among the options
+    7. Use clear and concise language
+    8. Format mathematical equations using LaTeX syntax if needed
     """
 
     try:
@@ -212,7 +197,7 @@ def generate_quiz(text: str) -> str:
             model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": f"Please create a comprehensive quiz for the following material:\n\n{text}."},
+                {"role": "user", "content": f"Create a quiz based on this material:\n\n{text}"},
             ],
             temperature=0.3,
             max_tokens=8000,
@@ -260,8 +245,19 @@ async def study_guide(request: TextRequest):
 
 @app.post("/quiz")
 async def quiz(request: TextRequest):
-    quiz = generate_quiz(request.text)
-    return {"quiz": quiz}
+    try:
+        quiz_content = generate_quiz(request.text)
+        # Ensure the response is valid JSON
+        try:
+            quiz_json = json.loads(quiz_content)
+            return quiz_json  # Return the parsed JSON directly
+        except json.JSONDecodeError as e:
+            print("Error parsing quiz JSON:", e)
+            print("Raw quiz content:", quiz_content)
+            raise HTTPException(status_code=500, detail="Invalid quiz format generated")
+    except Exception as e:
+        print(f"Error generating quiz: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error generating quiz: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn

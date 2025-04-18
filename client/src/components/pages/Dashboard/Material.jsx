@@ -182,6 +182,7 @@ const Material = () => {
     setShowSummary(false);
     setShowStudyGuide(false);
     setSelectedMaterial(null);
+    setShowQuiz(false);
   };
 
   const toggleOptionsMenu = (materialId, event) => {
@@ -401,7 +402,7 @@ const Material = () => {
                             <span className="font-medium font-open-sans">Study Guide</span>
                           </button>
                           <button
-                            onClick={() => handleQuizClick(material)} className="w-full flex items-center justify-center space-x-2 p-3 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-700 transition-all duration-300 border-2 border-solid border-purple-50 hover:border-purple-400">
+                            onClick={() => handleQuizClick(material.study_guide)} className="w-full flex items-center justify-center space-x-2 p-3 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-700 transition-all duration-300 border-2 border-solid border-purple-50 hover:border-purple-400">
                             <CheckCircle className="h-5 w-5" />
                             <span className="font-medium font-open-sans">Quiz</span>
                           </button>
