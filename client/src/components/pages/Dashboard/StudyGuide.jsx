@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import remarkGfm from 'remark-gfm';
 import 'katex/dist/katex.min.css';
 import { ChevronDown, ChevronUp, BookOpen } from 'lucide-react';
 
@@ -158,13 +159,42 @@ const StudyGuide = ({ material }) => {
                   <div className="prose prose-slate max-w-none text-sm sm:text-base">
                     <ReactMarkdown
                       children={section.content}
-                      remarkPlugins={[remarkMath]}
+                      remarkPlugins={[remarkMath, remarkGfm]}
                       rehypePlugins={[rehypeKatex]}
                       components={{
-                        h3: ({node, ...props}) => <h3 className="text-base sm:text-lg font-semibold mt-3 sm:mt-4 mb-1.5 sm:mb-2" {...props} />,
-                        ul: ({node, ...props}) => <ul className="list-disc pl-4 sm:pl-5 my-1.5 sm:my-2" {...props} />,
-                        li: ({node, ...props}) => <li className="mb-0.5 sm:mb-1" {...props} />,
-                        p: ({node, ...props}) => <p className="mb-2 sm:mb-3" {...props} />
+                        h1: ({node, ...props}) => <h1 className="text-2xl font-bold mt-6 mb-4" {...props} />,
+                        h2: ({node, ...props}) => <h2 className="text-xl font-bold mt-5 mb-3" {...props} />,
+                        h3: ({node, ...props}) => <h3 className="text-lg font-semibold mt-4 mb-2" {...props} />,
+                        h4: ({node, ...props}) => <h4 className="text-base font-semibold mt-3 mb-2" {...props} />,
+                        p: ({node, ...props}) => <p className="mb-4 leading-relaxed" {...props} />,
+                        ul: ({node, ...props}) => <ul className="list-disc pl-6 mb-4" {...props} />,
+                        ol: ({node, ...props}) => <ol className="list-decimal pl-6 mb-4" {...props} />,
+                        li: ({node, ...props}) => <li className="mb-1" {...props} />,
+                        blockquote: ({node, ...props}) => <blockquote className="border-l-4 border-gray-300 pl-4 italic my-4" {...props} />,
+                        code: ({node, inline, ...props}) => 
+                          inline ? (
+                            <code className="bg-gray-100 rounded px-1 py-0.5 font-mono text-sm" {...props} />
+                          ) : (
+                            <code className="block bg-gray-100 rounded p-2 my-2 font-mono text-sm overflow-x-auto" {...props} />
+                          ),
+                        pre: ({node, ...props}) => <pre className="bg-gray-100 rounded p-2 my-2 overflow-x-auto" {...props} />,
+                        a: ({node, ...props}) => <a className="text-blue-600 hover:text-blue-800 underline" {...props} />,
+                        img: ({node, ...props}) => <img className="max-w-full h-auto my-4 rounded" {...props} />,
+                        table: ({node, ...props}) => (
+                          <div className="overflow-x-auto my-4">
+                            <table className="min-w-full divide-y divide-gray-200" {...props} />
+                          </div>
+                        ),
+                        thead: ({node, ...props}) => <thead className="bg-gray-50" {...props} />,
+                        tbody: ({node, ...props}) => <tbody className="divide-y divide-gray-200" {...props} />,
+                        tr: ({node, ...props}) => <tr className="hover:bg-gray-50" {...props} />,
+                        th: ({node, ...props}) => (
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" {...props} />
+                        ),
+                        td: ({node, ...props}) => (
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500" {...props} />
+                        ),
+                        hr: ({node, ...props}) => <hr className="my-6 border-gray-200" {...props} />,
                       }}
                     />
                   </div>
