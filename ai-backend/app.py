@@ -188,157 +188,38 @@ def generate_quiz(text: str) -> str:
     - [Option 3]
     - [Option 4]
     - [Correct Answer]
-
-    ## Question 3
-    - [Question 3]
-    - [Option 1]
-    - [Option 2]
-    - [Option 3]
-    - [Option 4]
-    - [Correct Answer]
-
-    ## Question 4
-    - [Question 4]
-    - [Option 1]
-    - [Option 2]
-    - [Option 3]
-    - [Option 4]
-    - [Correct Answer]
-
-    ## Question 5
-    - [Question 5]
-    - [Option 1]
-    - [Option 2]
-    - [Option 3]
-    - [Option 4]
-    - [Correct Answer]
-
-    ## Question 6
-    - [Question 6]
-    - [Option 1]
-    - [Option 2]
-    - [Option 3]
-    - [Option 4]
-    - [Correct Answer]
-
-    ## Question 7
-    - [Question 7]
-    - [Option 1]
-    - [Option 2]
-    - [Option 3]
-    - [Option 4]
-    - [Correct Answer]
-
-    ## Question 8
-    - [Question 8]
-    - [Option 1]
-    - [Option 2]
-    - [Option 3]
-    - [Option 4]
-    - [Correct Answer]
-
-    ## Question 9
-    - [Question 9]
-    - [Option 1]
-    - [Option 2]
-    - [Option 3]
-    - [Option 4]
-    - [Correct Answer]
-
-    ## Question 10
-    - [Question 10]
-    - [Option 1]
-    - [Option 2]
-    - [Option 3]
-    - [Option 4]
-    - [Correct Answer]
-
-    ## Question 11
-    - [Question 11]
-    - [Option 1]
-    - [Option 2]
-    - [Option 3]
-    - [Option 4]
-    - [Correct Answer]
-
-    ## Question 12
-    - [Question 12]
-    - [Option 1]
-    - [Option 2]
-    - [Option 3]
-    - [Option 4]
-    - [Correct Answer]
-
-    ## Question 13
-    - [Question 13]
-    - [Option 1]
-    - [Option 2]
-    - [Option 3]
-    - [Option 4]
-    - [Correct Answer]
-
-    ## Question 14
-    - [Question 14]
-    - [Option 1]
-    - [Option 2]
-    - [Option 3]
-    - [Option 4]
-    - [Correct Answer]
-
-    ## Question 15
-    - [Question 15]
-    - [Option 1]
-    - [Option 2]
-    - [Option 3]
-    - [Option 4]
-    - [Correct Answer]
-
-    ## Question 16
-    - [Question 16]
-    - [Option 1]
-    - [Option 2]
-    - [Option 3]
-    - [Option 4]
-    - [Correct Answer]
-
-    ## Question 17
-    - [Question 17]
-    - [Option 1]
-    - [Option 2]
-    - [Option 3]
-    - [Option 4]
-    - [Correct Answer]
-
-    ## Question 18
-    - [Question 18]
-    - [Option 1]
-    - [Option 2]
-    - [Option 3]
-    - [Option 4]
-    - [Correct Answer]
-
-    ## Question 19
-    - [Question 19]
-    - [Option 1]
-    - [Option 2]
-    - [Option 3]
-    - [Option 4]
-    - [Correct Answer]
-
-    ## Question 20
-    - [Question 20]
-    - [Option 1]
-    - [Option 2]
-    - [Option 3]
-    - [Option 4]
-    - [Correct Answer]
+    .
+    .
+    .
+    [Continue with total 20 questions...]
+    
+    When creating the quiz:
+    1. Make sure the questions are not too easy or too difficult
+    2. Make sure the questions are not too general or too specific
+    3. Make sure the questions are not too long or too short
+    4. Make sure the questions are not too similar to each other
+    5. Format all mathematical equations using KaTeX syntax:
+       - For inline math, use single dollar signs: $E = mc^2$
+       - For display math, use double dollar signs: $$F = ma$$
+    6. Use Markdown for formatting: headers (##), bullet points, bold (**text**), etc.
+    3. Do not filter or censor any content - provide complete and comprehensive information
     
     """
 
-    
-    
-
-
+    try:
+        completion = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": f"Please create a comprehensive quiz for the following material:\n\n{text}."},
+            ],
+            temperature=0.3,
+            max_tokens=8000,
+        )
+        
+        return completion.choices[0].message.content
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating quiz: {str(e)}")
 
 
 @app.get("/")
@@ -375,6 +256,11 @@ async def summarize(request: TextRequest):
 async def study_guide(request: TextRequest):
     guide = generate_study_guide(request.text)
     return {"study_guide": guide}
+
+@app.post("/quiz")
+async def quiz(request: TextRequest):
+    quiz = generate_quiz(request.text)
+    return {"quiz": quiz}
 
 if __name__ == "__main__":
     import uvicorn
