@@ -189,7 +189,7 @@ def generate_quiz(text: str) -> str:
     6. The correct answer should be randomly distributed among the options
     7. Use clear and concise language
     8. Format mathematical equations using LaTeX syntax if needed
-    9. Return ONLY the JSON object, no other text or formatting
+    9. Return ONLY the JSON object, no other text or formatting , don't use markdown code 
     """
 
     try:
@@ -248,25 +248,10 @@ async def quiz(request: TextRequest):
     try:
         quiz_content = generate_quiz(request.text)
         print("Raw quiz content:", quiz_content)  # Debug log
-        
-        # Clean the response by removing markdown code block formatting
-        cleaned_content = quiz_content.strip()
-        if cleaned_content.startswith('```json'):
-            cleaned_content = cleaned_content[7:]  # Remove ```json
-        if cleaned_content.endswith('```'):
-            cleaned_content = cleaned_content[:-3]  # Remove ```
-        cleaned_content = cleaned_content.strip()
-        
-        print("Cleaned quiz content:", cleaned_content)  # Debug log
-        
-        # Ensure the response is valid JSON
-        try:
-            quiz_json = json.loads(cleaned_content)
-            return quiz_json  # Return the parsed JSON directly
-        except json.JSONDecodeError as e:
-            print("Error parsing quiz JSON:", e)
-            print("Cleaned content that failed to parse:", cleaned_content)
-            raise HTTPException(status_code=500, detail="Invalid quiz format generated")
+        return quiz_content  # Return the parsed JSON directly
+    except Exception as e:
+        print("Cleaned content that failed to parse:", quiz_content)
+        raise HTTPException(status_code=500, detail="Invalid quiz format generated")
     except Exception as e:
         print(f"Error generating quiz: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error generating quiz: {str(e)}")
