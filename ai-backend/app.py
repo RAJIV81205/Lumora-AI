@@ -248,13 +248,23 @@ async def quiz(request: TextRequest):
     try:
         quiz_content = generate_quiz(request.text)
         print("Raw quiz content:", quiz_content)  # Debug log
-        return quiz_content  # Return the parsed JSON directly
-    except Exception as e:
-        print("Cleaned content that failed to parse:", quiz_content)
-        raise HTTPException(status_code=500, detail="Invalid quiz format generated")
+
+        # Parse string into JSON before returning
+        parsed = json.loads(quiz_content)
+
+        if "questions" not in parsed or not isinstance(parsed["questions"], list):
+            raise ValueError("No valid 'questions' list found")
+
+        return JSONResponse(content=parsed)
+
+    except json.JSONDecodeError as e:
+        print("Failed to parse JSON from quiz content:", quiz_content)
+        raise HTTPException(status_code=500, detail="Quiz content is not valid JSON")
+
     except Exception as e:
         print(f"Error generating quiz: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error generating quiz: {str(e)}")
+
 
 if __name__ == "__main__":
     import uvicorn

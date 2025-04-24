@@ -30,9 +30,16 @@ const Quiz = ({ material }) => {
       const data = await response.json();
       console.log('Quiz data received:', data);
 
-      console.log(data.questions);
+      const questionsArray = data?.questions || data?.data?.questions;
 
-      setQuestions(data.questions);
+      console.log("Parsed questions:", questionsArray);
+      
+      if (!Array.isArray(questionsArray)) {
+        throw new Error("Quiz data does not contain a valid 'questions' array.");
+      }
+      
+      setQuestions(questionsArray);
+      
 
       setError(null);
     } catch (error) {
@@ -41,11 +48,20 @@ const Quiz = ({ material }) => {
     }
   };
 
+
   useEffect(() => {
     if (material) {
+      // Clear previous state before fetching
+      setQuestions([]);
+      setCurrentQuestionIndex(0);
+      setSelectedAnswer(null);
+      setShowResult(false);
+      setScore(0);
+      setQuizCompleted(false);
       getQuiz();
     }
   }, [material]);
+  
 
   const handleAnswerSelect = (answer) => {
     if (showResult) return; // Prevent multiple selections
@@ -122,7 +138,7 @@ const Quiz = ({ material }) => {
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
+    <div className="max-w-3xl mx-auto p-6 font-open-sans overflow-scroll">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Quiz Challenge</h1>
         <div className="text-lg font-semibold">
@@ -141,7 +157,7 @@ const Quiz = ({ material }) => {
         <span className="text-gray-600 float-right">{progress}% Complete</span>
       </div>
 
-      <div className="bg-white rounded-lg p-6 shadow-sm">
+      <div className="bg-white rounded-lg p-6 shadow-sm mt-10">
         <h2 className="text-xl font-semibold mb-6">{currentQuestion.question}</h2>
 
         <div className="space-y-3">
@@ -154,29 +170,27 @@ const Quiz = ({ material }) => {
                   ? option === currentQuestion.correctAnswer
                     ? 'bg-green-100 border-2 border-green-500'
                     : 'bg-red-100 border-2 border-red-500'
-                  : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
+                  : showResult && option === currentQuestion.correctAnswer
+                    ? 'bg-green-100 border-2 border-green-500'
+                    : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
               }`}
               disabled={showResult}
             >
               {option}
-              {showResult && selectedAnswer === option && (
+              {showResult && (
                 <span className="float-right font-semibold">
-                  {option === currentQuestion.correctAnswer ? '✓ Correct' : '✗ Incorrect'}
+                  {option === currentQuestion.correctAnswer
+                    ? '✓ Correct'
+                    : selectedAnswer === option
+                      ? '✗ Incorrect'
+                      : ''}
                 </span>
               )}
             </button>
           ))}
         </div>
 
-        {showResult && (
-          <div className="mt-4 p-4 bg-gray-100 rounded-lg">
-            <p className="font-medium">
-              {selectedAnswer === currentQuestion.correctAnswer
-                ? "Correct! Well done!"
-                : `The correct answer is: ${currentQuestion.correctAnswer}`}
-            </p>
-          </div>
-        )}
+      
 
         <div className="mt-6 flex justify-between">
           <button
