@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Sidebar from './Sidebar'
 import Navbar from './Navbar'
-import { FileText, MoreVertical, CheckCircle, Clock, ArrowRight, Upload, File, Image, Loader2, X } from 'lucide-react'
+import { FileText, MoreVertical, CheckCircle, Clock, ArrowRight, Upload, File, Image, Loader2, X , Share } from 'lucide-react'
 import UploadMaterialsPopup from './UploadMaterialsPopup'
 import Summary from './Summary'
 import StudyGuide from './StudyGuide'
@@ -196,6 +196,10 @@ const Material = () => {
     setOpenMenuId(null); // Close the menu after action
   };
 
+  const handleShare = (material) =>{
+
+  }
+
   const handleDelete = async (materialId) => {
     setIsLoading(true);
     try {
@@ -352,6 +356,14 @@ const Material = () => {
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                       </svg>
                                       Change Name
+                                    </button>
+
+                                    <button
+                                      className="flex items-center w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                                      onClick={() => handleChangeName(material.id)}
+                                    >
+                                      <Share  className="h-4 w-4 mr-2" />
+                                      Share
                                     </button>
 
                                     <div className="border-t border-gray-100 my-1"></div>
