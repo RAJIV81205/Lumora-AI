@@ -6,8 +6,10 @@ import UploadMaterialsPopup from './UploadMaterialsPopup'
 import Summary from './Summary'
 import StudyGuide from './StudyGuide'
 import Quiz from './Quiz'
+import { useNavigate } from 'react-router'
 
 const Material = () => {
+  const navigate = useNavigate()
   const [isUploadPopupOpen, setIsUploadPopupOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -197,6 +199,7 @@ const Material = () => {
   };
 
   const handleShare = (material) =>{
+    navigate(`/share/${material}`)
 
   }
 
@@ -360,7 +363,7 @@ const Material = () => {
 
                                     <button
                                       className="flex items-center w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-                                      onClick={() => handleChangeName(material.id)}
+                                      onClick={() => handleShare(material.id)}
                                     >
                                       <Share  className="h-4 w-4 mr-2" />
                                       Share

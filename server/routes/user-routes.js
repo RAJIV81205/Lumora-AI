@@ -126,4 +126,35 @@ router.post("/delete/material",verifyToken, async (req,res) =>{
     }
 })
 
+router.get("/material/:courseId", async (req, res) => {
+    try {
+        const courseId = req.params.courseId;
+        
+        // Find any user that has this material
+        const user = await User.findOne({ "material._id": courseId });
+        
+        if (!user) {
+            return res.status(404).json({ message: "Material not found" });
+        }
+
+        const material = user.material.find(mat => mat._id.toString() === courseId);
+        
+        if (!material) {
+            return res.status(404).json({ message: "Material not found" });
+        }
+
+        res.status(200).json({
+            id: material._id,
+            subName: material.subName,
+            content: material.content,
+            summary: material.summary,
+            study_guide: material.study_guide,
+            addedAt: material.addedAt
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
 export default router;
