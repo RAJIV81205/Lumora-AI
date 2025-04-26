@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { X, Copy, Mail, Share2 } from 'lucide-react';
+import { FaWhatsapp , FaFacebook , FaLinkedin   } from "react-icons/fa";
+import { FaXTwitter , FaXmark } from "react-icons/fa6";
+import { MdOutlineAlternateEmail } from "react-icons/md";
+import {Copy} from "lucide-react"
 
 const SharePopup = ({ isOpen, onClose, shareUrl }) => {
   const [copySuccess, setCopySuccess] = useState(false);
@@ -45,7 +48,7 @@ const SharePopup = ({ isOpen, onClose, shareUrl }) => {
             onClick={onClose}
             className="p-1 hover:bg-gray-100 rounded-full text-gray-600 hover:text-gray-900 transition-colors"
           >
-            <X size={24} />
+            <FaXmark  size={24} />
           </button>
         </div>
 
@@ -71,15 +74,15 @@ const SharePopup = ({ isOpen, onClose, shareUrl }) => {
             onClick={shareViaWhatsApp}
             className="flex flex-col items-center gap-1 p-3 rounded-lg bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366]/20 transition-colors"
           >
-            <Share2 size={24} />
+            <FaWhatsapp size={24} />
             <span className="text-xs font-medium">WhatsApp</span>
           </button>
           
           <button
             onClick={shareViaTwitter}
-            className="flex flex-col items-center gap-1 p-3 rounded-lg bg-[#1DA1F2]/10 text-[#1DA1F2] hover:bg-[#1DA1F2]/20 transition-colors"
+            className="flex flex-col items-center gap-1 p-3 rounded-lg bg-[#4c4d4d]/10 text-[#292a2b] hover:bg-[#4c4d4d]/20 transition-colors"
           >
-            <Share2 size={24} />
+            <FaXTwitter size={24} />
             <span className="text-xs font-medium">Twitter</span>
           </button>
           
@@ -87,7 +90,7 @@ const SharePopup = ({ isOpen, onClose, shareUrl }) => {
             onClick={shareViaFacebook}
             className="flex flex-col items-center gap-1 p-3 rounded-lg bg-[#1877F2]/10 text-[#1877F2] hover:bg-[#1877F2]/20 transition-colors"
           >
-            <Share2 size={24} />
+            <FaFacebook size={24} />
             <span className="text-xs font-medium">Facebook</span>
           </button>
           
@@ -95,7 +98,7 @@ const SharePopup = ({ isOpen, onClose, shareUrl }) => {
             onClick={shareViaLinkedIn}
             className="flex flex-col items-center gap-1 p-3 rounded-lg bg-[#0A66C2]/10 text-[#0A66C2] hover:bg-[#0A66C2]/20 transition-colors"
           >
-            <Share2 size={24} />
+            <FaLinkedin  size={24} />
             <span className="text-xs font-medium">LinkedIn</span>
           </button>
           
@@ -103,7 +106,7 @@ const SharePopup = ({ isOpen, onClose, shareUrl }) => {
             onClick={shareViaEmail}
             className="flex flex-col items-center gap-1 p-3 rounded-lg bg-[#EA4335]/10 text-[#EA4335] hover:bg-[#EA4335]/20 transition-colors"
           >
-            <Mail size={24} />
+            <MdOutlineAlternateEmail size={24} />
             <span className="text-xs font-medium">Email</span>
           </button>
         </div>
