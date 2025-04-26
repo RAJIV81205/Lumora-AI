@@ -44,13 +44,13 @@ const Chat = () => {
   };
 
   return (
-    <div className="font-sans bg-gradient-to-br from-green-200 to-white  rounded-xl shadow-md p-4 sm:p-6 w-full">
+    <div className="font-sans bg-gradient-to-br from-green-200 to-white  rounded-xl shadow-md p-4 sm:p-6 w-full ">
       <Navbar />
       
       <main className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6">
         <Sidebar />
 
-        <section className="col-span-1 md:col-span-10 space-y-4 sm:space-y-6">
+        <section className="col-span-1 md:col-span-10 space-y-4 sm:space-y-6 font-open-sans">
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0 mb-4 sm:mb-6">
               <div>
