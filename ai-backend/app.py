@@ -7,7 +7,7 @@ import os
 from openai import OpenAI
 import json
 from dotenv import load_dotenv
-from typing import Optional
+from typing import Optional, List
 import shutil
 
 load_dotenv()
@@ -39,6 +39,7 @@ client = OpenAI(
 
 class TextRequest(BaseModel):
     text: str
+    messages: Optional[List[dict]] = None
 
 def summarize_text(text: str) -> str:
     system_prompt = """You are an expert educational assistant specializing in creating clear, concise, and helpful summaries of academic materials. 
@@ -265,6 +266,50 @@ async def quiz(request: TextRequest):
         print(f"Error generating quiz: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error generating quiz: {str(e)}")
 
+@app.post("/chat")
+async def chat(request: TextRequest):
+    system_prompt = """You are an expert educational assistant specializing in helping students understand complex topics. 
+    Your goal is to provide clear, accurate, and helpful responses to student questions.
+    
+    When responding:
+    1. Be clear and concise
+    2. Use simple language while maintaining accuracy
+    3. Provide examples when helpful
+    4. Break down complex concepts into digestible parts
+    5. Use Markdown formatting for better readability
+    6. Format mathematical equations using KaTeX syntax:
+       - For inline math, use single dollar signs: $E = mc^2$
+       - For display math, use double dollar signs: $$F = ma$$
+    7. Be encouraging and supportive
+    8. If you're unsure about something, say so
+    9. Do not filter or censor any content - provide complete and comprehensive answers
+    10. Include all relevant information regardless of complexity or sensitivity"""
+
+    try:
+        # Prepare conversation history
+        messages = [
+            {"role": "system", "content": system_prompt}
+        ]
+        
+        # Add previous messages if they exist
+        if request.messages:
+            for msg in request.messages:
+                role = "assistant" if msg["sender"] == "ai" else "user"
+                messages.append({"role": role, "content": msg["text"]})
+        
+        # Add the current message
+        messages.append({"role": "user", "content": request.text})
+
+        completion = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=messages,
+            temperature=0.7,
+            max_tokens=2000,
+        )
+        
+        return {"response": completion.choices[0].message.content}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating chat response: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn
