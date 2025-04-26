@@ -95,7 +95,7 @@ const Chat = () => {
         <Sidebar />
 
         <section className="col-span-1 md:col-span-10 space-y-4 sm:space-y-6 font-open-sans flex flex-col h-full">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 flex flex-col flex-grow">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 flex flex-col h-full overflow-hidden">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0 mb-4 sm:mb-6">
               <div>
                 <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-1 sm:mb-2">AI Assistant</h2>
@@ -107,7 +107,7 @@ const Chat = () => {
               </div>
             </div>
 
-            <div className="flex-grow bg-gray-50 rounded-lg p-3 sm:p-4 mb-3 sm:mb-4 overflow-y-scroll border border-gray-100 ">
+            <div className="bg-gray-50 rounded-lg p-3 sm:p-4 mb-3 sm:mb-4 overflow-y-scroll border border-gray-100 flex-grow">
               {messages.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full text-gray-400">
                   <Bot className="h-8 w-8 sm:h-12 sm:w-12 mb-2 sm:mb-4" />
@@ -129,7 +129,7 @@ const Chat = () => {
                             ul: ({node, ...props}) => <ul className="list-disc pl-4 space-y-1" {...props} />,
                             ol: ({node, ...props}) => <ol className="list-decimal pl-4 space-y-1" {...props} />,
                             li: ({node, ...props}) => <li className="text-xs sm:text-sm leading-relaxed" {...props} />,
-                            code: ({node, inline, ...props}) => 
+                            code: ({node, inline, ...props}) =>
                               inline ? (
                                 <code className="bg-gray-700 text-white px-1 py-0.5 rounded leading-normal" {...props} />
                               ) : (
@@ -170,8 +170,8 @@ const Chat = () => {
                 placeholder="Ask anything..."
                 className="w-full py-2 sm:py-3 pl-3 sm:pl-4 pr-8 sm:pr-10 rounded-full border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 text-sm sm:text-base"
               />
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className="absolute right-2 sm:right-3 top-2 sm:top-3 text-blue-600 hover:text-blue-700 transition-colors duration-300"
                 disabled={!inputMessage.trim()}
               >
