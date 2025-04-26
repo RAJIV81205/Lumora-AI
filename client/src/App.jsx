@@ -6,6 +6,7 @@ import SignupForm from './components/pages/Auth/SignupForm'
 import Dashboard from './components/pages/Dashboard/Dashboard'
 import Chat from './components/pages/Dashboard/Chat'
 import Material from './components/pages/Dashboard/Material'
+import Share from './components/pages/Dashboard/Share'
 
 
 // ScrollToTop component to reset scroll position on route changes
@@ -28,10 +29,9 @@ const App = () => {
         <Route path="/login" index element={<LoginForm />} />
         <Route path="/signup" element={<SignupForm />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/dashboard/:courseId" element={<Dashboard />} />
         <Route path="/dashboard/chat" element={<Chat />} />
         <Route path="/dashboard/materials" element={<Material />} />
-        
+        <Route path="/share/:courseId" element={<Share />} />
       </Routes>
     </Router>
   )
