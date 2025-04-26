@@ -7,6 +7,7 @@ import Summary from './Summary'
 import StudyGuide from './StudyGuide'
 import Quiz from './Quiz'
 import { useNavigate } from 'react-router'
+import SharePopup from './SharePopup'
 
 const Material = () => {
   const navigate = useNavigate()
@@ -19,6 +20,9 @@ const Material = () => {
   const [showQuiz, setShowQuiz] = useState(false)
   // Track which material's menu is open by its ID
   const [openMenuId, setOpenMenuId] = useState(null);
+  // Add state for SharePopup
+  const [isSharePopupOpen, setIsSharePopupOpen] = useState(false);
+  const [shareUrl, setShareUrl] = useState('');
 
   const [materials, setMaterials] = useState([]);
   const menuRef = useRef(null);
@@ -198,9 +202,11 @@ const Material = () => {
     setOpenMenuId(null); // Close the menu after action
   };
 
-  const handleShare = (material) =>{
-    navigate(`/share/${material}`)
-
+  const handleShare = (materialId) => {
+    const shareUrl = `${window.location.origin}/share/${materialId}`;
+    setShareUrl(shareUrl);
+    setIsSharePopupOpen(true);
+    setOpenMenuId(null); // Close the menu after opening share popup
   }
 
   const handleDelete = async (materialId) => {
@@ -264,6 +270,13 @@ const Material = () => {
         onClose={() => setIsUploadPopupOpen(false)}
         onUploadSuccess={getMaterials}
       />
+      
+      <SharePopup 
+        isOpen={isSharePopupOpen}
+        onClose={() => setIsSharePopupOpen(false)}
+        shareUrl={shareUrl}
+      />
+
       <Navbar />
 
       {(showSummary || showStudyGuide || showQuiz) ? (
