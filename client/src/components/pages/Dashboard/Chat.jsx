@@ -44,6 +44,7 @@ const Chat = () => {
       setIsLoading(true);
 
       try {
+        console.log('Sending request with messages:', messages);
         const response = await fetch(`${url}/chat`, {
           method: 'POST',
           headers: {
@@ -56,10 +57,13 @@ const Chat = () => {
         });
 
         if (!response.ok) {
+          const errorData = await response.json();
+          console.error('Server error response:', errorData);
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
+        console.log('Received response:', data);
 
         const aiMessage = {
           text: data.response,
@@ -83,8 +87,10 @@ const Chat = () => {
   };
 
   const clearChat = () => {
-    setMessages([]);
-    localStorage.removeItem('chatMessages');
+    if (window.confirm('Are you sure you want to clear the chat?')) {
+      setMessages([]);
+      localStorage.removeItem('chatMessages');
+    }
   };
 
   return (
@@ -162,6 +168,17 @@ const Chat = () => {
               <div ref={messagesEndRef} />
             </div>
 
+            {/* Clear Chat Button */}
+            <div className="flex justify-end mb-3">
+              <button
+                onClick={clearChat}
+                className="text-xs sm:text-sm text-red-500 hover:text-red-600 border border-red-300 hover:border-red-400 rounded-full px-3 py-1 transition-colors duration-300"
+              >
+                Clear Chat
+              </button>
+            </div>
+
+            {/* Input Box */}
             <form onSubmit={handleSendMessage} className="relative mt-2">
               <input
                 type="text"
@@ -178,6 +195,7 @@ const Chat = () => {
                 <Send className="h-4 w-4 sm:h-5 sm:w-5" />
               </button>
             </form>
+
           </div>
         </section>
       </main>

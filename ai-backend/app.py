@@ -268,7 +268,7 @@ async def quiz(request: TextRequest):
 
 @app.post("/chat")
 async def chat(request: TextRequest):
-    system_prompt = """You are an expert educational assistant specializing in helping students understand complex topics. 
+    system_prompt = """Your Name is Lumora AI ,you are an expert educational assistant specializing in helping students understand complex topics. 
     Your goal is to provide clear, accurate, and helpful responses to student questions.
     
     When responding:
@@ -286,6 +286,7 @@ async def chat(request: TextRequest):
     10. Include all relevant information regardless of complexity or sensitivity"""
 
     try:
+        
         # Prepare conversation history
         messages = [
             {"role": "system", "content": system_prompt}
@@ -294,8 +295,11 @@ async def chat(request: TextRequest):
         # Add previous messages if they exist
         if request.messages:
             for msg in request.messages:
-                role = "assistant" if msg["sender"] == "ai" else "user"
-                messages.append({"role": role, "content": msg["text"]})
+                # Map frontend message format to OpenAI format
+                role = "assistant" if msg.get("sender") == "ai" else "user"
+                content = msg.get("text", "")
+                print(f"Adding message - Role: {role}, Content: {content}")
+                messages.append({"role": role, "content": content})
         
         # Add the current message
         messages.append({"role": "user", "content": request.text})
@@ -309,7 +313,18 @@ async def chat(request: TextRequest):
         
         return {"response": completion.choices[0].message.content}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error generating chat response: {str(e)}")
+        print(f"Error in chat endpoint: {str(e)}")
+        print(f"Error type: {type(e)}")
+        import traceback
+        print(f"Traceback: {traceback.format_exc()}")
+        raise HTTPException(
+            status_code=500,
+            detail={
+                "error": str(e),
+                "type": str(type(e)),
+                "traceback": traceback.format_exc()
+            }
+        )
 
 if __name__ == "__main__":
     import uvicorn
