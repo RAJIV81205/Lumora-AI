@@ -39,7 +39,7 @@ const Sidebar = () => {
             )}
 
             {/* Sidebar */}
-            <nav className={`col-span-1 md:col-span-2 bg-white rounded-xl shadow p-4 min-h-screen border border-gray-800 md:block ${
+            <nav className={`col-span-1 md:col-span-2 bg-white rounded-xl shadow p-4 min-h-screen border border-gray-800 md:block h-screen font-open-sans ${
                 isOpen ? 'fixed top-0 left-0 w-64 z-50 translate-x-0' : 'hidden md:block'
             }`}>
                 <ul className="space-y-1 sm:space-y-2">
