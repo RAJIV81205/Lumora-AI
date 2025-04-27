@@ -2,10 +2,10 @@ import React from 'react'
 import { Upload, Bot } from 'lucide-react'
 import UploadMaterialsPopup from "./UploadMaterialsPopup";
 import { useState } from 'react';
-import { Link } from 'react-router';
+import { Link , useNavigate } from 'react-router';
 
 const Navbar = () => {
-
+    const navigate = useNavigate();
     const [isUploadPopupOpen, setIsUploadPopupOpen] = useState(false);
     return (
         <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0 mb-4 sm:mb-8">
@@ -29,7 +29,7 @@ const Navbar = () => {
                     <Upload className="h-4 w-4 sm:h-5 sm:w-5" />
                     <span>Upload Materials</span>
                 </button>
-                <button className="bg-blue-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg font-medium flex items-center justify-center space-x-2 hover:bg-blue-500 transition-all duration-300 border-blue-950 border text-sm sm:text-base">
+                <button onClick={()=>navigate("/dashboard/chat")} className="bg-blue-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg font-medium flex items-center justify-center space-x-2 hover:bg-blue-500 transition-all duration-300 border-blue-950 border text-sm sm:text-base">
                     <Bot className="h-4 w-4 sm:h-5 sm:w-5" />
                     <span>Ask AI Assistant</span>
                 </button>
