@@ -1,54 +1,54 @@
-import React, { useState, useEffect } from "react"
-import { Rocket, CirclePlay, FileUp, FileText, Sparkles, Brain, BookCheck, IdCard, Gauge, BrainCog, Braces, Menu, X } from "lucide-react"
-import { Link } from "react-router"
-import { motion, AnimatePresence } from "framer-motion"
+import React, { useState, useEffect } from "react";
+import { Rocket, CirclePlay, FileUp, FileText, Sparkles, Brain, BookCheck, IdCard, Gauge, BrainCog, Braces, Menu, X } from "lucide-react";
+import { Link } from "react-router";
+import { motion, AnimatePresence } from "framer-motion";
 
 const LandingPage = () => {
     // Animation variants
     const containerVariants = {
         hidden: { opacity: 0 },
-        visible: { 
+        visible: {
             opacity: 1,
-            transition: { 
+            transition: {
                 duration: 0.5,
                 when: "beforeChildren",
                 staggerChildren: 0.1
             }
         }
-    }
+    };
 
     const itemVariants = {
         hidden: { y: 20, opacity: 0 },
-        visible: { 
-            y: 0, 
+        visible: {
+            y: 0,
             opacity: 1,
             transition: { duration: 0.5 }
         }
-    }
+    };
 
     const buttonVariants = {
-        hover: { 
+        hover: {
             scale: 1.05,
             boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.1)",
             transition: { duration: 0.3 }
         },
         tap: { scale: 0.95 }
-    }
+    };
 
     const cardVariants = {
-        hover: { 
+        hover: {
             scale: 1.03,
             boxShadow: "0px 10px 25px rgba(0, 0, 0, 0.1)",
             transition: { duration: 0.3 }
         }
-    }
+    };
 
     const logoVariants = {
-        hover: { 
+        hover: {
             rotate: 360,
             transition: { duration: 0.8 }
         }
-    }
+    };
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -59,7 +59,7 @@ const LandingPage = () => {
         } else {
             document.body.style.overflow = 'unset';
         }
-        
+
         return () => {
             document.body.style.overflow = 'unset';
         };
@@ -70,26 +70,26 @@ const LandingPage = () => {
     };
 
     return (
-        <motion.div 
+        <motion.div
             className="w-full bg-gradient-to-br from-green-200 to-white font-sans px-4 md:px-0"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
         >
-            <motion.header 
+            <motion.header
                 className="py-6 md:px-10 flex justify-between items-center relative z-50"
                 initial={{ y: -50, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.6 }}
             >
                 <Link to="/">
-                    <motion.div 
+                    <motion.div
                         className="flex items-center gap-2"
                         whileHover={{ scale: 1.05 }}
                     >
-                        <motion.svg 
-                            className="w-8 h-8 text-green-600" 
-                            viewBox="0 0 24 24" 
+                        <motion.svg
+                            className="w-8 h-8 text-green-600"
+                            viewBox="0 0 24 24"
                             fill="currentColor"
                             variants={logoVariants}
                             whileHover="hover"
@@ -102,7 +102,7 @@ const LandingPage = () => {
 
                 {/* Mobile Menu Button */}
                 <div className="md:hidden z-50">
-                    <button 
+                    <button
                         onClick={toggleMenu}
                         className="text-green-700 hover:text-green-800 focus:outline-none p-2 rounded-full hover:bg-green-50 transition-colors duration-300"
                         aria-label="Toggle menu"
@@ -114,51 +114,51 @@ const LandingPage = () => {
                 {/* Full Screen Mobile Menu */}
                 <AnimatePresence>
                     {isMenuOpen && (
-                        <motion.div 
+                        <motion.div
                             className="fixed inset-0 bg-gradient-to-br from-green-50 to-white z-40 md:hidden"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.3 }}
                         >
-                            <motion.div 
+                            <motion.div
                                 className="h-full flex flex-col pt-24 px-8 pb-8"
                                 initial={{ y: 20, opacity: 0 }}
                                 animate={{ y: 0, opacity: 1 }}
                                 transition={{ delay: 0.1, duration: 0.4 }}
                             >
-                                <motion.nav 
+                                <motion.nav
                                     className="flex flex-col space-y-6"
                                     variants={containerVariants}
                                     initial="hidden"
                                     animate="visible"
                                 >
-                                    <motion.a 
-                                        href="#" 
+                                    <motion.a
+                                        href="#"
                                         className="text-xl font-medium text-green-800 hover:text-green-600 transition-colors duration-300 py-2 border-b border-green-100"
                                         variants={itemVariants}
                                         whileHover={{ x: 10 }}
                                     >
                                         Features
                                     </motion.a>
-                                    <motion.a 
-                                        href="#" 
+                                    <motion.a
+                                        href="#"
                                         className="text-xl font-medium text-green-800 hover:text-green-600 transition-colors duration-300 py-2 border-b border-green-100"
                                         variants={itemVariants}
                                         whileHover={{ x: 10 }}
                                     >
                                         Pricing
                                     </motion.a>
-                                    <motion.a 
-                                        href="#" 
+                                    <motion.a
+                                        href="#"
                                         className="text-xl font-medium text-green-800 hover:text-green-600 transition-colors duration-300 py-2 border-b border-green-100"
                                         variants={itemVariants}
                                         whileHover={{ x: 10 }}
                                     >
                                         Testimonials
                                     </motion.a>
-                                    <motion.a 
-                                        href="#" 
+                                    <motion.a
+                                        href="#"
                                         className="text-xl font-medium text-green-800 hover:text-green-600 transition-colors duration-300 py-2 border-b border-green-100"
                                         variants={itemVariants}
                                         whileHover={{ x: 10 }}
@@ -166,15 +166,15 @@ const LandingPage = () => {
                                         FAQ
                                     </motion.a>
                                 </motion.nav>
-                                
-                                <motion.div 
+
+                                <motion.div
                                     className="flex flex-col space-y-4 mt-auto pt-8"
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.3, duration: 0.4 }}
                                 >
                                     <Link to="/login">
-                                        <motion.button 
+                                        <motion.button
                                             className="w-full px-6 py-3 text-base font-medium rounded-xl text-green-700 bg-green-50 hover:bg-green-100 transition-all duration-300 cursor-pointer"
                                             variants={buttonVariants}
                                             whileHover="hover"
@@ -184,7 +184,7 @@ const LandingPage = () => {
                                         </motion.button>
                                     </Link>
                                     <Link to="/signup">
-                                        <motion.button 
+                                        <motion.button
                                             className="w-full px-6 py-3 text-base font-medium bg-green-600 text-white rounded-xl shadow-md hover:bg-green-700 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
                                             variants={buttonVariants}
                                             whileHover="hover"
@@ -200,38 +200,38 @@ const LandingPage = () => {
                 </AnimatePresence>
 
                 {/* Desktop Navigation */}
-                <motion.nav 
+                <motion.nav
                     className="hidden md:flex items-center space-x-8 text-sm font-medium"
                     variants={containerVariants}
                     initial="hidden"
                     animate="visible"
                 >
-                    <motion.a 
-                        href="#" 
+                    <motion.a
+                        href="#"
                         className="hover:text-green-600 transition-colors duration-300"
                         variants={itemVariants}
                         whileHover={{ scale: 1.1 }}
                     >
                         Features
                     </motion.a>
-                    <motion.a 
-                        href="#" 
+                    <motion.a
+                        href="#"
                         className="hover:text-green-600 transition-colors duration-300"
                         variants={itemVariants}
                         whileHover={{ scale: 1.1 }}
                     >
                         Pricing
                     </motion.a>
-                    <motion.a 
-                        href="#" 
+                    <motion.a
+                        href="#"
                         className="hover:text-green-600 transition-colors duration-300"
                         variants={itemVariants}
                         whileHover={{ scale: 1.1 }}
                     >
                         Testimonials
                     </motion.a>
-                    <motion.a 
-                        href="#" 
+                    <motion.a
+                        href="#"
                         className="hover:text-green-600 transition-colors duration-300"
                         variants={itemVariants}
                         whileHover={{ scale: 1.1 }}
@@ -241,14 +241,14 @@ const LandingPage = () => {
                 </motion.nav>
 
                 {/* Desktop Auth Buttons */}
-                <motion.div 
+                <motion.div
                     className="hidden md:flex items-center gap-4"
                     variants={containerVariants}
                     initial="hidden"
                     animate="visible"
                 >
                     <Link to="/login">
-                        <motion.button 
+                        <motion.button
                             className="px-4 py-2 text-sm font-medium rounded-lg text-green-700 hover:bg-green-50 transition-all duration-300 cursor-pointer"
                             variants={buttonVariants}
                             whileHover="hover"
@@ -258,7 +258,7 @@ const LandingPage = () => {
                         </motion.button>
                     </Link>
                     <Link to="/signup">
-                        <motion.button 
+                        <motion.button
                             className="px-4 py-2 text-sm font-medium bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
                             variants={buttonVariants}
                             whileHover="hover"
@@ -270,44 +270,44 @@ const LandingPage = () => {
                 </motion.div>
             </motion.header>
 
-            <motion.main 
+            <motion.main
                 className=" w-full py-12 px-8 lg:w-[85%] mx-auto"
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
             >
-                <motion.section 
+                <motion.section
                     className="flex flex-col lg:flex-row items-center gap-6 lg:gap-10 mb-12 lg:mb-16"
                     variants={itemVariants}
                 >
-                    <motion.div 
+                    <motion.div
                         className="w-full space-y-4 md:space-y-6"
                         variants={containerVariants}
                     >
-                        <motion.h2 
+                        <motion.h2
                             className="text-4xl md:text-5xl font-bold leading-tight text-green-900 font-open-sans"
                             variants={itemVariants}
                         >
-                            Turn Study Materials into <motion.span 
+                            Turn Study Materials into <motion.span
                                 className="bg-gradient-to-r from-green-600 to-green-400 bg-clip-text text-transparent font-open-sans"
                                 variants={itemVariants}
                             >
                                 Smart Learning
                             </motion.span> Experiences
                         </motion.h2>
-                        <motion.p 
+                        <motion.p
                             className="text-lg text-gray-500 font-nunito-sans"
                             variants={itemVariants}
                         >
                             Upload your notes, textbooks, and lectures. Our AI instantly transforms them into summaries, flashcards, and interactive quizzes.
                         </motion.p>
 
-                        <motion.div 
+                        <motion.div
                             className="flex flex-col sm:flex-row gap-4 pt-4"
                             variants={itemVariants}
                         >
                             <Link to="/login">
-                                <motion.button 
+                                <motion.button
                                     className="px-6 py-3 bg-green-600 text-white rounded-xl shadow-lg hover:bg-green-700 hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 font-medium cursor-pointer"
                                     variants={buttonVariants}
                                     whileHover="hover"
@@ -317,7 +317,7 @@ const LandingPage = () => {
                                     Get Started Free
                                 </motion.button>
                             </Link>
-                            <motion.button 
+                            <motion.button
                                 className="px-6 py-3 border border-green-300 rounded-xl hover:bg-green-50 transition-all duration-300 flex items-center justify-center gap-2 font-medium"
                                 variants={buttonVariants}
                                 whileHover="hover"
@@ -328,30 +328,30 @@ const LandingPage = () => {
                             </motion.button>
                         </motion.div>
 
-                        <motion.div 
+                        <motion.div
                             className="flex items-center gap-3 md:gap-4 pt-4 md:pt-6"
                             variants={itemVariants}
                         >
                             <div className="flex -space-x-3">
-                                <motion.img 
-                                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100" 
-                                    className="w-8 h-8 rounded-full border-2 border-white object-cover" 
-                                    alt="User" 
+                                <motion.img
+                                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100"
+                                    className="w-8 h-8 rounded-full border-2 border-white object-cover"
+                                    alt="User"
                                     whileHover={{ scale: 1.2, zIndex: 10 }}
                                 />
-                                <motion.img 
-                                    src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100" 
-                                    className="w-8 h-8 rounded-full border-2 border-white object-cover" 
-                                    alt="User" 
+                                <motion.img
+                                    src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100"
+                                    className="w-8 h-8 rounded-full border-2 border-white object-cover"
+                                    alt="User"
                                     whileHover={{ scale: 1.2, zIndex: 10 }}
                                 />
-                                <motion.img 
-                                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100" 
-                                    className="w-8 h-8 rounded-full border-2 border-white object-cover" 
-                                    alt="User" 
+                                <motion.img
+                                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100"
+                                    className="w-8 h-8 rounded-full border-2 border-white object-cover"
+                                    alt="User"
                                     whileHover={{ scale: 1.2, zIndex: 10 }}
                                 />
-                                <motion.div 
+                                <motion.div
                                     className="w-8 h-8 rounded-full border-2 border-white bg-green-100 flex items-center justify-center text-xs font-medium text-green-700"
                                     whileHover={{ scale: 1.2, zIndex: 10 }}
                                 >
@@ -362,11 +362,11 @@ const LandingPage = () => {
                         </motion.div>
                     </motion.div>
 
-                    <motion.div 
+                    <motion.div
                         className="w-full md:w-1/2 relative mt-8 md:mt-0"
                         variants={itemVariants}
                     >
-                        <motion.div 
+                        <motion.div
                             className="bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-[1.02] transition-all duration-500 border border-gray-100"
                             variants={cardVariants}
                             whileHover="hover"
@@ -382,7 +382,7 @@ const LandingPage = () => {
                             </div>
 
                             <div className="p-6 space-y-6">
-                                <motion.div 
+                                <motion.div
                                     className="flex gap-4"
                                     variants={itemVariants}
                                 >
@@ -391,7 +391,7 @@ const LandingPage = () => {
                                     </div>
                                     <div className="flex-1">
                                         <p className="text-sm font-medium mb-2">Upload your study materials</p>
-                                        <motion.div 
+                                        <motion.div
                                             className="border-2 border-dashed border-gray-200 rounded-lg p-4 hover:border-green-300 transition-colors duration-300 text-center cursor-pointer flex flex-col items-center justify-center"
                                             whileHover={{ scale: 1.02, borderColor: "#10B981" }}
                                         >
@@ -402,7 +402,7 @@ const LandingPage = () => {
                                     </div>
                                 </motion.div>
 
-                                <motion.div 
+                                <motion.div
                                     className="flex gap-4"
                                     variants={itemVariants}
                                 >
@@ -416,13 +416,13 @@ const LandingPage = () => {
                                                 <span className="text-xs text-gray-500 font-nunito-sans">Processing "Biology_101.pdf"</span>
                                                 <span className="text-xs text-green-600 font-nunito-sans">83%</span>
                                             </div>
-                                            <motion.div 
+                                            <motion.div
                                                 className="w-full bg-gray-200 rounded-full h-1.5"
                                                 initial={{ width: 0 }}
                                                 animate={{ width: "100%" }}
                                                 transition={{ duration: 1.5, ease: "easeOut" }}
                                             >
-                                                <motion.div 
+                                                <motion.div
                                                     className="bg-green-500 h-1.5 rounded-full w-4/5"
                                                     initial={{ width: 0 }}
                                                     animate={{ width: "80%" }}
@@ -433,7 +433,7 @@ const LandingPage = () => {
                                     </div>
                                 </motion.div>
 
-                                <motion.div 
+                                <motion.div
                                     className="flex gap-4"
                                     variants={itemVariants}
                                 >
@@ -443,21 +443,21 @@ const LandingPage = () => {
                                     <div className="flex-1">
                                         <p className="text-sm font-medium mb-2">Get personalized study tools</p>
                                         <div className="flex gap-2 overflow-x-auto pb-2">
-                                            <motion.div 
+                                            <motion.div
                                                 className="min-w-[120px] bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition-all duration-300 cursor-pointer flex items-center justify-center flex-col"
                                                 whileHover={{ scale: 1.05, y: -5 }}
                                             >
                                                 <FileText className="w-5 h-5 mb-2 text-green-500" />
                                                 <p className="text-xs font-medium">Summaries</p>
                                             </motion.div>
-                                            <motion.div 
+                                            <motion.div
                                                 className="min-w-[120px] bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition-all duration-300 cursor-pointer flex items-center justify-center flex-col"
                                                 whileHover={{ scale: 1.05, y: -5 }}
                                             >
                                                 <BookCheck className="w-5 h-5 mb-2 text-green-500" />
                                                 <p className="text-xs font-medium">Quizzes</p>
                                             </motion.div>
-                                            <motion.div 
+                                            <motion.div
                                                 className="min-w-[120px] bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition-all duration-300 cursor-pointer flex items-center justify-center flex-col"
                                                 whileHover={{ scale: 1.05, y: -5 }}
                                             >
@@ -470,7 +470,7 @@ const LandingPage = () => {
                             </div>
                         </motion.div>
 
-                        <motion.div 
+                        <motion.div
                             className="absolute -z-10 bg-gradient-to-r from-green-300 to-green-500 w-full h-full rounded-2xl -right-5 -bottom-5"
                             initial={{ opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}
@@ -479,7 +479,7 @@ const LandingPage = () => {
                     </motion.div>
                 </motion.section>
 
-                <motion.section 
+                <motion.section
                     className="mb-12 md:mb-16"
                     variants={itemVariants}
                 >
@@ -522,11 +522,11 @@ const LandingPage = () => {
                     </div>
                 </motion.section>
 
-                <motion.section 
+                <motion.section
                     className="grid grid-cols-1 md:grid-cols-3 gap-8"
                     variants={containerVariants}
                 >
-                    <motion.div 
+                    <motion.div
                         className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100"
                         variants={itemVariants}
                         whileHover={{ y: -10, boxShadow: "0px 10px 25px rgba(0, 0, 0, 0.1)" }}
@@ -541,7 +541,7 @@ const LandingPage = () => {
                         </p>
                     </motion.div>
 
-                    <motion.div 
+                    <motion.div
                         className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100"
                         variants={itemVariants}
                         whileHover={{ y: -10, boxShadow: "0px 10px 25px rgba(0, 0, 0, 0.1)" }}
@@ -556,8 +556,8 @@ const LandingPage = () => {
                         </p>
                     </motion.div>
 
-                    <motion.div 
-                        className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100"
+                    <motion.div
+                        className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 "
                         variants={itemVariants}
                         whileHover={{ y: -10, boxShadow: "0px 10px 25px rgba(0, 0, 0, 0.1)" }}
                     >
@@ -571,9 +571,111 @@ const LandingPage = () => {
                         </p>
                     </motion.div>
                 </motion.section>
+
+                {/* Enhanced Vertical Line Section */}
+                <motion.section
+                    className="py-16 px-4 md:px-8 lg:px-12 relative my-10 bg-gradient-to-b from-green-50 to-white w-full"
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    transition={{ duration: 0.8 }}
+                    viewport={{ once: true }}
+                >
+                    <div className=" top-0 min-h-screen flex items-center justify-center">
+                        <div className="max-w-7xl mx-auto w-full">
+                            <motion.div 
+                                className="text-center mb-12"
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5, delay: 0.2 }}
+                                viewport={{ once: true }}
+                            >
+                                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                                    How It Works
+                                </h2>
+                                <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                                    Transform your study materials into powerful learning tools in just a few simple steps
+                                </p>
+                            </motion.div>
+
+                            <div className="relative h-[150vh]">
+                                <div className="absolute left-1/2 top-0 bottom-0 w-2 bg-gradient-to-b from-green-300 to-green-500 rounded-full transform -translate-x-1/2">
+                                    <div className="absolute top-0 bottom-0 w-2 bg-white rounded-full animate-pulse opacity-50"></div>
+                                </div>
+                                
+                                <div className="relative h-full">
+                                    {[
+                                        {
+                                            title: "Upload PDF",
+                                            description: "Simply upload your study materials in PDF format. Our system supports various document types and sizes.",
+                                            icon: <FileUp className="w-6 h-6 text-green-600" />,
+                                            position: "left"
+                                        },
+                                        {
+                                            title: "Extract Text",
+                                            description: "Our AI automatically extracts and processes the text content from your documents with high accuracy.",
+                                            icon: <FileText className="w-6 h-6 text-green-600" />,
+                                            position: "right"
+                                        },
+                                        {
+                                            title: "Generate Summary",
+                                            description: "Get a concise summary of the key points and main concepts from your materials.",
+                                            icon: <Sparkles className="w-6 h-6 text-green-600" />,
+                                            position: "left"
+                                        },
+                                        {
+                                            title: "Generate Study Guide",
+                                            description: "Receive a comprehensive study guide with organized notes, key terms, and important concepts.",
+                                            icon: <BookCheck className="w-6 h-6 text-green-600" />,
+                                            position: "right"
+                                        },
+                                        {
+                                            title: "Ready to Go",
+                                            description: "Access your personalized study materials anytime, anywhere, and start learning effectively.",
+                                            icon: <Rocket className="w-6 h-6 text-green-600" />,
+                                            position: "left"
+                                        }
+                                    ].map((step, index) => (
+                                        <motion.div
+                                            key={index}
+                                            className={`absolute w-full ${step.position === 'left' ? 'pr-1/2' : 'pl-1/2'}`}
+                                            style={{ top: `${index * 20}%` }}
+                                            initial={{ opacity: 0, x: step.position === 'left' ? -50 : 50 }}
+                                            whileInView={{ opacity: 1, x: 0 }}
+                                            transition={{ duration: 0.8, delay: index * 0.2 }}
+                                            viewport={{ once: true }}
+                                        >
+                                            <div className={`max-w-md ${step.position === 'left' ? 'mr-auto' : 'ml-auto'}`}>
+                                                <motion.div
+                                                    className="flex items-start gap-4 p-6 rounded-xl bg-white shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
+                                                    whileHover={{ scale: 1.05, boxShadow: "0px 10px 25px rgba(0, 0, 0, 0.1)" }}
+                                                >
+                                                    <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                                                        {step.icon}
+                                                    </div>
+                                                    <div>
+                                                        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                                                            {step.title}
+                                                        </h3>
+                                                        <p className="text-gray-600">
+                                                            {step.description}
+                                                        </p>
+                                                    </div>
+                                                </motion.div>
+                                            </div>
+                                            {/* Progress Dot */}
+                                            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-gradient-to-r from-green-400 to-green-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                                                <div className="w-4 h-4 bg-white rounded-full"></div>
+                                            </div>
+                                        </motion.div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </motion.section>
             </motion.main>
         </motion.div>
-    )
-}
+    );
+};
 
 export default LandingPage;
