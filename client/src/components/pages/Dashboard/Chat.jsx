@@ -28,7 +28,7 @@ const Chat = () => {
     localStorage.setItem('chatMessages', JSON.stringify(messages));
   }, [messages]);
 
-  const url = import.meta.env.VITE_PYTHON_BACKEND_URL;
+  const url = import.meta.env.VITE_BACKEND_URL;
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -67,7 +67,7 @@ const Chat = () => {
 
         const aiMessage = {
           text: data.response,
-          sender: 'ai',
+          sender: 'model',
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
 
@@ -76,7 +76,7 @@ const Chat = () => {
         console.error('Error sending message:', error);
         const errorMessage = {
           text: "Sorry, I encountered an error. Please try again later.",
-          sender: 'ai',
+          sender: 'model',
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
         setMessages(prev => [...prev, errorMessage]);
